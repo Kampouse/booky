@@ -29,30 +29,18 @@ import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
 import type { WalletModuleFactory } from '@near-wallet-selector/core';
 
 const walletSelectorConfig = {
-  network: NetworkId,
+  network: {
+    networkId: NetworkId,
+    nodeUrl: 'https://rpc.testnet.near.org',
+    walletUrl: 'https://testnet.mynearwallet.com/',
+    helperUrl: 'https://helper.testnet.near.org',
+    explorerUrl: 'https://testnet.nearblocks.io',
+  },
+  debug: true,
   modules: [
     setupMeteorWallet(),
     setupMeteorWalletApp({ contractId: HelloNearContract }),
     setupHotWallet(),
-    setupLedger(),
-    setupSender(),
-    setupNearMobileWallet(),
-    setupWelldoneWallet(),
-    setupMathWallet(),
-    setupBitgetWallet(),
-    setupRamperWallet(),
-    setupUnityWallet({
-      projectId: 'your-project-id',
-      metadata: {
-        name: 'Hello NEAR',
-        description: 'Hello NEAR Example',
-        url: 'https://near.org',
-        icons: ['https://near.org/favicon.ico'],
-      },
-    }),
-    setupOKXWallet(),
-    setupCoin98Wallet(),
-    setupIntearWallet(),
   ] as WalletModuleFactory[],
 } as any;
 
