@@ -19,7 +19,7 @@ const BookLibrary = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Demo mode flag - set to true to test UI without wallet connection
-  const demoMode = true;
+  const demoMode = false;
 
   // Modal states
   const [showAddBookForm, setShowAddBookForm] = useState(false);
