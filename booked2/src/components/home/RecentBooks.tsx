@@ -57,9 +57,7 @@ export const RecentBooks = ({ books }: RecentBooksProps) => {
                     {book.reading_status}
                   </span>
                 </div>
-                <p className="text-muted mb-2 fst-italic">
-                  by {book.author}
-                </p>
+                <p className="text-muted mb-2 fst-italic">by {book.author}</p>
                 <div className="d-flex gap-3 text-muted small">
                   <span>📅 {book.acquisition_date}</span>
                   <span>✓ {book.condition}</span>

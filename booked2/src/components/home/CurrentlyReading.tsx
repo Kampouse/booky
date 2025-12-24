@@ -52,9 +52,7 @@ export const CurrentlyReading: React.FC<CurrentlyReadingProps> = ({
                 >
                   {book.title}
                 </h5>
-                <p className="text-muted mb-3 fst-italic">
-                  by {book.author}
-                </p>
+                <p className="text-muted mb-3 fst-italic">by {book.author}</p>
                 {book.total_chapters && (
                   <>
                     <div

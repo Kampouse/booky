@@ -1,6 +1,6 @@
 const contractPerNetwork = {
   mainnet: 'booky.near',
-  testnet: 'booky.testnet',
+  testnet: 'quixotic-hour.testnet',
 };
 
 export const NetworkId = 'testnet';
