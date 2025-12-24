@@ -1,7 +1,7 @@
 export const Footer = () => {
   return (
     <div
-      className="py-5 mt-5"
+      className="py-5"
       style={{
         background: 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)',
         color: '#fffff0',

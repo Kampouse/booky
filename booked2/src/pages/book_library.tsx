@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useBookyContract } from '@/lib/bookyContract';
 import { BookEntry } from '@/config';
-import {
-  AddBookForm,
-  BookCard,
-  ChapterNotes,
-  UpdateProgress,
-} from '@/components/book-library';
+import { AddBookForm, BookCard, ChapterNotes } from '@/components/book-library';
 import BookNotes from './book_notes';
 import styles from '@/styles/book-library.module.css';
 
@@ -24,8 +19,6 @@ const BookLibrary = () => {
   // Modal states
   const [showAddBookForm, setShowAddBookForm] = useState(false);
   const [selectedBookForNotes, setSelectedBookForNotes] =
-    useState<BookEntry | null>(null);
-  const [selectedBookForProgress, setSelectedBookForProgress] =
     useState<BookEntry | null>(null);
 
   // Search and filter states
@@ -165,22 +158,7 @@ const BookLibrary = () => {
     }
   };
 
-  const handleUpdateProgress = (isbn: string) => {
-    const book = books.find((b) => b.isbn === isbn);
-    if (book) {
-      setSelectedBookForProgress(book);
-    }
-  };
-
   const handleNoteUpdate = () => {
-    if (demoMode) {
-      loadDemoLibrary();
-    } else {
-      loadLibrary();
-    }
-  };
-
-  const handleProgressUpdate = () => {
     if (demoMode) {
       loadDemoLibrary();
     } else {
@@ -405,7 +383,7 @@ const BookLibrary = () => {
               key={book.isbn}
               book={book}
               onViewNotes={handleViewNotes}
-              onUpdateProgress={handleUpdateProgress}
+              demoMode={demoMode}
             />
           ))}
         </div>
@@ -449,17 +427,6 @@ const BookLibrary = () => {
         <AddBookForm
           onClose={() => setShowAddBookForm(false)}
           onSuccess={handleAddBookSuccess}
-          demoMode={demoMode}
-          demoBooks={books}
-          setDemoBooks={setBooks}
-        />
-      )}
-
-      {selectedBookForProgress && (
-        <UpdateProgress
-          book={selectedBookForProgress}
-          onClose={() => setSelectedBookForProgress(null)}
-          onUpdate={handleProgressUpdate}
           demoMode={demoMode}
           demoBooks={books}
           setDemoBooks={setBooks}

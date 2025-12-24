@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { Navigation } from '@/components/navigation';
 import Home from '@/pages/home';
 import BookLibrary from '@/pages/book_library';
+import UpdateProgressPage from '@/pages/update_progress';
 import { HelloNearContract, NetworkId, BookyContract } from '@/config';
 
 import '@near-wallet-selector/modal-ui/styles.css';
@@ -52,6 +53,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/book-library" element={<BookLibrary />} />
+          <Route
+            path="/update-progress/:isbn"
+            element={<UpdateProgressPage />}
+          />
         </Routes>
       </BrowserRouter>
     </WalletSelectorProvider>

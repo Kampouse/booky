@@ -70,10 +70,7 @@ export const CurrentlyReading: React.FC<CurrentlyReadingProps> = ({
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                       <small className="text-muted">
-                        <span
-                          className="fw-bold"
-                          style={{ color: '#d4af37' }}
-                        >
+                        <span className="fw-bold" style={{ color: '#d4af37' }}>
                           Chapter {book.current_chapter}
                         </span>{' '}
                         of {book.total_chapters}

@@ -84,69 +84,6 @@ const Home = () => {
     <div className="fade-in">
       {/* Hero Section - Literary Style */}
       <HeroSection accountId={accountId} />
-
-      {accountId && (
-        <div className="container my-5">
-          {loading ? (
-            <LoadingState />
-          ) : error ? (
-            <div
-              style={{
-                padding: '2rem',
-                textAlign: 'center',
-                backgroundColor: 'rgba(229, 62, 62, 0.1)',
-                border: '1px solid var(--burgundy, #722f37)',
-                borderRadius: '8px',
-                marginBottom: '2rem',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1.125rem',
-                  marginBottom: '1rem',
-                  color: 'var(--ink-dark, #1a1a1a)',
-                }}
-              >
-                {error}
-              </p>
-              <button
-                onClick={loadDashboard}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  background: 'var(--burgundy, #722f37)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                }}
-              >
-                Try Again
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Statistics Section - Elegant Cards */}
-              <StatsCards stats={stats} />
-
-              {/* Currently Reading Section */}
-              <CurrentlyReading currentlyReading={currentlyReading} />
-
-              {/* Recent Books Section */}
-              <RecentBooks books={recentBooks} />
-
-              {/* Quick Actions Section */}
-              <QuickActions />
-
-              {/* Reading Tips Section - Elegant Cards */}
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Footer - Literary Style */}
-      <Footer />
     </div>
   );
 };
