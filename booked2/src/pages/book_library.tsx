@@ -7,6 +7,7 @@ import {
   ChapterNotes,
   UpdateProgress,
 } from '@/components/book-library';
+import BookNotes from './book_notes';
 import styles from '@/styles/book-library.module.css';
 
 const BookLibrary = () => {
@@ -199,6 +200,26 @@ const BookLibrary = () => {
 
     return matchesSearch && matchesStatus;
   });
+
+  // Show BookNotes page if a book is selected
+  if (selectedBookForNotes) {
+    return (
+      <BookNotes
+        book={selectedBookForNotes}
+        onBack={() => {
+          setSelectedBookForNotes(null);
+          if (demoMode) {
+            loadDemoLibrary();
+          } else {
+            loadLibrary();
+          }
+        }}
+        demoMode={demoMode}
+        demoBooks={books}
+        setDemoBooks={setBooks}
+      />
+    );
+  }
 
   return (
     <div className={styles.libraryContainer}>
@@ -428,17 +449,6 @@ const BookLibrary = () => {
         <AddBookForm
           onClose={() => setShowAddBookForm(false)}
           onSuccess={handleAddBookSuccess}
-          demoMode={demoMode}
-          demoBooks={books}
-          setDemoBooks={setBooks}
-        />
-      )}
-
-      {selectedBookForNotes && (
-        <ChapterNotes
-          book={selectedBookForNotes}
-          onClose={() => setSelectedBookForNotes(null)}
-          onUpdate={handleNoteUpdate}
           demoMode={demoMode}
           demoBooks={books}
           setDemoBooks={setBooks}
