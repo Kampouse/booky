@@ -43,8 +43,6 @@
 }
 
 .bookCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     border-color: #a8d5a2;
 }
 
@@ -58,20 +56,24 @@
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    background: #a8d5a2;
+    background: linear-gradient(135deg, #a8d5a2 0%, #8bc34a 100%);
     color: #ffffff;
-    padding: 0.375rem 0.75rem;
-    border-radius: 12px;
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
     font-family:
         'Source Sans Pro',
         -apple-system,
         sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    box-shadow: 0 2px 8px rgba(168, 213, 162, 0.3);
-    z-index: 1;
+    box-shadow: 0 1px 4px rgba(168, 213, 162, 0.4);
+    z-index: 10;
+    white-space: nowrap;
+    max-width: calc(100% - 3rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Card Content */
@@ -230,7 +232,7 @@
 
 /* Action Buttons - Always Visible on Mobile */
 .bookCardActions {
-    margin-top: 1rem;
+    margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid #e9ecef;
     display: flex;
@@ -904,14 +906,9 @@
         gap: 1.5rem;
     }
 
-    /* Show hover effects on desktop */
+    /* Always show actions on desktop - no hover needed */
     .bookCardActions {
-        display: none; /* Hidden by default */
-    }
-
-    .bookCard:hover .bookCardActions {
         display: flex;
-        animation: fadeIn 0.3s ease;
     }
 }
 
