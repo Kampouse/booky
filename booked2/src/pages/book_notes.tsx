@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { BookEntry } from '@/config';
-import { useBookyContract } from '@/lib/bookyContract';
+import { useAddChapterNote } from '@/lib/useBookyQuery';
 import { useNoteContext } from '@/contexts';
 import styles from '@/styles/book-notes.module.css';
 
@@ -19,7 +19,7 @@ const BookNotes: React.FC<BookNotesProps> = ({
   demoBooks = [],
   setDemoBooks,
 }) => {
-  const { accountId, addChapterNote } = useBookyContract();
+  const addChapterNoteMutation = useAddChapterNote();
   const { getDraft, setDraft, clearDraft, hasChanges, markAsSaved } =
     useNoteContext();
 
@@ -35,16 +35,6 @@ const BookNotes: React.FC<BookNotesProps> = ({
   const [saveStatus, setSaveStatus] = useState<
     'idle' | 'saving' | 'saved' | 'error'
   >('idle');
-
-  // Auto-dismiss success toast after 3 seconds
-  useEffect(() => {
-    if (saveStatus === 'saved') {
-      const timer = setTimeout(() => {
-        setSaveStatus('idle');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [saveStatus]);
 
   // Load notes and check for drafts when chapter or book changes
   useEffect(() => {
@@ -81,11 +71,6 @@ const BookNotes: React.FC<BookNotesProps> = ({
     if (!selectedChapter || localNote === notes[selectedChapter]) return;
 
     // Check if wallet is connected (only in non-demo mode)
-    if (!demoMode && !accountId) {
-      setError('Please connect your wallet to save notes to blockchain.');
-      return;
-    }
-
     setError(null);
     setSaving(true);
     setSaveStatus('saving');
@@ -116,13 +101,15 @@ const BookNotes: React.FC<BookNotesProps> = ({
 
         setIsDraft(false);
         setHasUnsavedChanges(false);
+        setSaveStatus('saved');
       } else {
-        const result = await addChapterNote(
-          book.isbn,
-          selectedChapter,
-          localNote,
-        );
-        console.log('Save successful:', result);
+        // React Query mutation - automatically handles caching and invalidation
+        await addChapterNoteMutation.mutateAsync({
+          isbn: book.isbn,
+          chapter: selectedChapter,
+          note: localNote,
+        });
+        console.log('Save successful');
         setNotes((prev) => ({ ...prev, [selectedChapter]: localNote }));
         setSaveStatus('saved');
 
@@ -132,6 +119,9 @@ const BookNotes: React.FC<BookNotesProps> = ({
 
         setIsDraft(false);
         setHasUnsavedChanges(false);
+
+        // Auto-dismiss success status after 3 seconds
+        setTimeout(() => setSaveStatus('idle'), 3000);
       }
     } catch (err: any) {
       console.error('Error saving note:', err);
@@ -263,18 +253,12 @@ const BookNotes: React.FC<BookNotesProps> = ({
             <button
               onClick={handleSave}
               className={styles.saveButton}
-              disabled={saving || (!demoMode && !accountId)}
-              title={
-                !demoMode && !accountId
-                  ? 'Connect your wallet to save'
-                  : 'Save to blockchain'
-              }
+              disabled={saving || addChapterNoteMutation.isPending}
+              title="Save to blockchain"
             >
-              {saving
+              {saving || addChapterNoteMutation.isPending
                 ? 'Saving...'
-                : !demoMode && !accountId
-                  ? 'Connect Wallet'
-                  : 'Save'}
+                : 'Save'}
             </button>
 
             {/* Success Toast */}
@@ -282,7 +266,7 @@ const BookNotes: React.FC<BookNotesProps> = ({
               <div
                 style={{
                   position: 'fixed',
-                  bottom: '2rem',
+                  top: '2rem',
                   right: '2rem',
                   padding: '1rem 1.5rem',
                   backgroundColor: '#10b981',
@@ -330,13 +314,14 @@ const BookNotes: React.FC<BookNotesProps> = ({
                 </button>
               </div>
             )}
+            )}
 
             {/* Error Toast */}
             {error && (
               <div
                 style={{
                   position: 'fixed',
-                  bottom: '2rem',
+                  top: '2rem',
                   right: '2rem',
                   padding: '1rem 1.5rem',
                   backgroundColor: '#ef4444',

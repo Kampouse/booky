@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useBookyContract } from '@/lib/bookyContract';
+import { useLibrary, useAddBook } from '@/lib/useBookyQuery';
 import { BookEntry } from '@/config';
 import { AddBookForm, BookCard } from '@/components/book-library';
 import styles from '@/styles/book-library.module.css';
 
 const BookLibrary = () => {
-  const { accountId, getLibrary, getReadingStats } = useBookyContract();
-
-  const [books, setBooks] = useState<BookEntry[]>([]);
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // React Query hooks with automatic caching (normal mode)
+  const {
+    data: queryBooks = [],
+    isLoading: queryLoading,
+    error: queryError,
+    refetch,
+  } = useLibrary();
+  const addBookMutation = useAddBook();
 
   // Demo mode flag - set to true to test UI without wallet connection
   const demoMode = false;
@@ -22,19 +24,25 @@ const BookLibrary = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  // Demo mode state (only used when demoMode is true)
+  const [demoBooks, setDemoBooks] = useState<BookEntry[]>([]);
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoError, setDemoError] = useState<string | null>(null);
+
+  // Determine which state to use based on demo mode
+  const books = demoMode ? demoBooks : queryBooks;
+  const loading = demoMode ? demoLoading : queryLoading;
+  const error = demoMode ? demoError : queryError;
+
   useEffect(() => {
     if (demoMode) {
       loadDemoLibrary();
-    } else if (accountId) {
-      loadLibrary();
-    } else {
-      setLoading(false);
     }
-  }, [accountId]);
+  }, [demoMode]);
 
   const loadDemoLibrary = () => {
-    setLoading(true);
-    setError(null);
+    setDemoLoading(true);
+    setDemoError(null);
 
     // Mock book data
     const mockData: BookEntry[] = [
@@ -109,42 +117,25 @@ const BookLibrary = () => {
       on_hold: 0,
     };
 
-    setBooks(mockData);
-    setStats(mockStats);
-    setLoading(false);
+    setDemoBooks(mockData);
   };
 
-  const loadLibrary = async () => {
-    setError(null);
-    try {
-      setLoading(true);
-
-      let library: BookEntry[] = [];
-      let statsData: any = null;
-
-      try {
-        library = await getLibrary();
-        statsData = await getReadingStats();
-      } catch (err) {
-        console.error('Error loading library:', err);
-        setError('Could not load your library. Please check your connection.');
-      }
-
-      setBooks(library);
-      setStats(statsData);
-    } catch (err) {
-      console.error('Unexpected error loading library:', err);
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAddBookSuccess = () => {
+  const handleAddBookSuccess = (book: BookEntry) => {
     if (demoMode) {
       loadDemoLibrary();
     } else {
-      loadLibrary();
+      // React Query will automatically refetch the library
+      // or we can trigger a manual refetch
+      refetch();
+    }
+  };
+
+  // Manual retry function for error recovery
+  const handleRetry = () => {
+    if (demoMode) {
+      loadDemoLibrary();
+    } else {
+      refetch();
     }
   };
 
@@ -229,38 +220,6 @@ const BookLibrary = () => {
       )}
 
       {/* Stats Cards */}
-      {stats && (
-        <div className={styles.statsGrid} style={{ marginBottom: '2rem' }}>
-          <div className={styles.statCard}>
-            <div className={styles.statCardIcon}>📚</div>
-            <div className={styles.statCardValue}>{stats.total_books}</div>
-            <div className={styles.statCardLabel}>Total Books</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statCardIcon}>📖</div>
-            <div className={styles.statCardValue}>
-              {stats.currently_reading}
-            </div>
-            <div className={styles.statCardLabel}>Reading</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statCardIcon}>✅</div>
-            <div className={styles.statCardValue}>{stats.completed}</div>
-            <div className={styles.statCardLabel}>Completed</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statCardIcon}>📋</div>
-            <div className={styles.statCardValue}>{stats.to_read}</div>
-            <div className={styles.statCardLabel}>To Read</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statCardIcon}>⏸️</div>
-            <div className={styles.statCardValue}>{stats.on_hold}</div>
-            <div className={styles.statCardLabel}>On Hold</div>
-          </div>
-        </div>
-      )}
-
       {/* Search and Filter Bar */}
       <div className={styles.searchFilterBar}>
         <div className={styles.searchInputWrapper}>
@@ -330,6 +289,20 @@ const BookLibrary = () => {
         </div>
       )}
 
+      {/* Error State with retry */}
+      {error && !loading && books.length === 0 && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateIcon}>⚠️</div>
+          <h2 className={styles.emptyStateTitle}>Error Loading Library</h2>
+          <p className={styles.emptyStateDescription}>
+            Could not load your library. Please check your connection.
+          </p>
+          <button className={styles.emptyStateButton} onClick={handleRetry}>
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Books Grid */}
       {!loading && filteredBooks.length > 0 ? (
         <div
@@ -385,8 +358,8 @@ const BookLibrary = () => {
           onClose={() => setShowAddBookForm(false)}
           onSuccess={handleAddBookSuccess}
           demoMode={demoMode}
-          demoBooks={books}
-          setDemoBooks={setBooks}
+          demoBooks={demoBooks}
+          setDemoBooks={setDemoBooks}
         />
       )}
     </div>

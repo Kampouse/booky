@@ -50,16 +50,16 @@ export const Navigation = () => {
         isScrolled ? 'shadow-lg' : ''
       }`}
       style={{
-        fontFamily: "'Source Sans Pro', sans-serif",
+        fontFamily: "'Playfair Display', Georgia, serif",
         letterSpacing: '0.02em',
         background: isScrolled
-          ? 'linear-gradient(135deg, #5c4033 0%, #722f37 100%)'
-          : 'linear-gradient(135deg, #5c4033 0%, #722f37 100%)',
+          ? 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)'
+          : 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)',
         padding: isScrolled ? '0.75rem 0' : '1.25rem 0',
         transition: 'all 0.3s ease',
         boxShadow: isScrolled
-          ? '0 4px 20px rgba(92, 64, 51, 0.3)'
-          : '0 2px 10px rgba(92, 64, 51, 0.15)',
+          ? '0 4px 20px rgba(45, 74, 62, 0.4)'
+          : '0 2px 10px rgba(45, 74, 62, 0.2)',
       }}
     >
       <div className="container">
@@ -127,21 +127,10 @@ export const Navigation = () => {
             {[
               { path: '/', label: 'Home', icon: '🏠' },
               { path: '/book-library', label: 'My Library', icon: '📖' },
-              ...(signedAccountId
-                ? [
-                    {
-                      path: '/book-library',
-                      label: 'Currently Reading',
-                      icon: '📚',
-                      state: { filter: 'reading' },
-                    },
-                  ]
-                : []),
             ].map((link) => (
               <li className="nav-item" key={link.label}>
                 <Link
                   to={link.path}
-                  state={link.state}
                   className="nav-link d-flex align-items-center gap-2"
                   onClick={handleNavClick}
                   style={{
@@ -180,7 +169,7 @@ export const Navigation = () => {
                 <div
                   className="fw-bold"
                   style={{
-                    color: '#d4af37',
+                    color: '#a8d5a2',
                     fontSize: '0.875rem',
                     fontFamily: "'Playfair Display', Georgia, serif",
                     letterSpacing: '0.02em',
@@ -196,11 +185,11 @@ export const Navigation = () => {
               style={{
                 background: signedAccountId
                   ? 'transparent'
-                  : 'linear-gradient(135deg, #d4af37 0%, #b8860b 100%)',
+                  : 'linear-gradient(135deg, #a8d5a2 0%, #7da87b 100%)',
                 border: signedAccountId
                   ? '2px solid rgba(255, 255, 240, 0.4)'
                   : 'none',
-                color: signedAccountId ? '#fffff0' : '#2c2c2c',
+                color: signedAccountId ? '#fffff0' : '#1a2a3a',
                 fontWeight: 600,
                 padding: '0.625rem 1.25rem',
                 borderRadius: '6px',
@@ -213,7 +202,7 @@ export const Navigation = () => {
                 if (!signedAccountId) {
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow =
-                    '0 4px 12px rgba(212, 175, 55, 0.4)';
+                    '0 4px 12px rgba(168, 213, 162, 0.4)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -239,15 +228,15 @@ export const Navigation = () => {
         style={{
           height: '2px',
           background:
-            'linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%)',
+            'linear-gradient(90deg, transparent 0%, #a8d5a2 50%, transparent 100%)',
           opacity: 0.5,
         }}
       ></div>
 
       <style>{`
         .nav-link:hover {
-          background: rgba(255, 255, 240, 0.1) !important;
-          color: #d4af37 !important;
+          background: rgba(168, 213, 162, 0.15) !important;
+          color: #a8d5a2 !important;
         }
 
         .nav-link::after {
@@ -257,7 +246,7 @@ export const Navigation = () => {
           left: 50%;
           width: 0;
           height: '2px';
-          background: #d4af37;
+          background: #a8d5a2;
           transition: all 0.3s ease;
           transform: translateX(-50%);
         }
@@ -267,17 +256,17 @@ export const Navigation = () => {
         }
 
         .navbar-brand:hover {
-          color: #d4af37 !important;
+          color: #a8d5a2 !important;
         }
 
         @media (max-width: 991px) {
           .navbar-collapse {
-            background: linear-gradient(135deg, #5c4033 0%, #722f37 100%);
+            background: linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%);
             padding: 1rem 0;
             margin-top: 1rem;
             border-radius: 8px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 8px 24px rgba(92, 64, 51, 0.4);
+            border: 1px solid rgba(168, 213, 162, 0.25);
+            box-shadow: 0 8px 24px rgba(45, 74, 62, 0.5);
           }
 
           .nav-link {

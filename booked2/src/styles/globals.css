@@ -77,6 +77,7 @@
 /* Dark Mode - HeroSection-Inspired Palette */
 @media (prefers-color-scheme: dark) {
     :root {
+        background-color: #192522;
         /* Background - HeroSection inspired gradient colors as solid */
         --paper-cream: #1f2d29;
         --paper-warm: #18241f;
