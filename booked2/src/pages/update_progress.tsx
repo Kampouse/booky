@@ -167,10 +167,10 @@ const UpdateProgressPage: React.FC = () => {
 
       setSuccess(true);
       setTimeout(() => {
-        const libraryUrl = demoMode
-          ? '/book-library?demo=true'
-          : '/book-library';
-        navigate(libraryUrl);
+        const noteUrl = demoMode
+          ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
+          : `/note-editor/${isbn}/${progressData.current_chapter}`;
+        navigate(noteUrl);
       }, 2000);
     } catch (err) {
       setError('Failed to update progress. Please try again.');
@@ -240,16 +240,16 @@ const UpdateProgressPage: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           background: 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)',
-          padding: '2rem',
+          padding: '1rem',
         }}
       >
         <div
           style={{
             backgroundColor: 'rgba(114, 47, 55, 0.1)',
             border: '1px solid #722f37',
-            borderRadius: '12px',
-            padding: '2rem',
-            maxWidth: '500px',
+            borderRadius: '10px',
+            padding: '1.5rem',
+            maxWidth: '450px',
             textAlign: 'center',
           }}
         >
@@ -257,26 +257,64 @@ const UpdateProgressPage: React.FC = () => {
             style={{
               color: '#722f37',
               fontFamily: "'Playfair Display', Georgia, serif",
-              marginBottom: '1rem',
+              marginBottom: '0.75rem',
+              fontSize: '1.5rem',
             }}
           >
             Error
           </h2>
-          <p style={{ color: '#1a2a3a', marginBottom: '1.5rem' }}>{error}</p>
-          <Link
-            to={demoMode ? '/book-library?demo=true' : '/book-library'}
+          <p
             style={{
-              display: 'inline-block',
-              padding: '0.875rem 2rem',
-              background: 'linear-gradient(135deg, #a8d5a2 0%, #88b882 100%)',
               color: '#1a2a3a',
-              borderRadius: '6px',
-              fontWeight: '600',
-              textDecoration: 'none',
+              marginBottom: '1rem',
+              fontSize: '0.95rem',
             }}
           >
-            Back to Library
-          </Link>
+            {error}
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              gap: '0.6rem',
+              justifyContent: 'center',
+            }}
+          >
+            <Link
+              to={
+                demoMode
+                  ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
+                  : `/note-editor/${isbn}/${progressData.current_chapter}`
+              }
+              style={{
+                display: 'inline-block',
+                padding: '0.6rem 1.25rem',
+                background: 'transparent',
+                border: '1px solid rgba(168, 213, 162, 0.3)',
+                color: '#a8d5a2',
+                borderRadius: '6px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+              }}
+            >
+              ← Back to Note
+            </Link>
+            <Link
+              to={demoMode ? '/book-library?demo=true' : '/book-library'}
+              style={{
+                display: 'inline-block',
+                padding: '0.6rem 1.25rem',
+                background: 'linear-gradient(135deg, #a8d5a2 0%, #88b882 100%)',
+                color: '#1a2a3a',
+                borderRadius: '6px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+              }}
+            >
+              Back to Library
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -288,6 +326,7 @@ const UpdateProgressPage: React.FC = () => {
         style={{
           minHeight: '100vh',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           background: 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)',
@@ -297,15 +336,15 @@ const UpdateProgressPage: React.FC = () => {
           style={{
             backgroundColor: 'rgba(168, 213, 162, 0.1)',
             border: '1px solid #a8d5a2',
-            borderRadius: '12px',
-            padding: '3rem',
+            borderRadius: '10px',
+            padding: '2rem',
             textAlign: 'center',
           }}
         >
           <div
             style={{
-              fontSize: '4rem',
-              marginBottom: '1rem',
+              fontSize: '2.5rem',
+              marginBottom: '0.5rem',
             }}
           >
             ✓
@@ -315,12 +354,19 @@ const UpdateProgressPage: React.FC = () => {
               color: '#a8d5a2',
               fontFamily: "'Playfair Display', Georgia, serif",
               marginBottom: '0.5rem',
+              fontSize: '1.5rem',
             }}
           >
             Success!
           </h2>
-          <p style={{ color: 'rgba(255, 255, 240, 0.85)', marginBottom: '0' }}>
-            Redirecting to library...
+          <p
+            style={{
+              color: 'rgba(255, 255, 240, 0.85)',
+              marginBottom: '0',
+              fontSize: '0.9rem',
+            }}
+          >
+            Redirecting back to note...
           </p>
         </div>
       </div>
@@ -332,28 +378,32 @@ const UpdateProgressPage: React.FC = () => {
       style={{
         minHeight: '100vh',
         background: 'linear-gradient(135deg, #2d4a3e 0%, #1a2a3a 100%)',
-        padding: '2rem 0',
+        padding: '1rem 0',
       }}
     >
       <div className="container">
         {/* Header */}
         <div
           style={{
-            marginBottom: '2rem',
+            marginBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
           <Link
-            to={demoMode ? '/book-library?demo=true' : '/book-library'}
+            to={
+              demoMode
+                ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
+                : `/note-editor/${isbn}/${progressData.current_chapter}`
+            }
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
               color: '#a8d5a2',
               textDecoration: 'none',
-              fontSize: '1rem',
+              fontSize: '0.95rem',
               fontWeight: '500',
               fontFamily: '"Lora", Georgia, serif',
               transition: 'all 0.3s ease',
@@ -367,7 +417,7 @@ const UpdateProgressPage: React.FC = () => {
               e.currentTarget.style.transform = 'translateX(0)';
             }}
           >
-            ← Back to Library
+            ← Back to Note
           </Link>
         </div>
 
@@ -385,9 +435,9 @@ const UpdateProgressPage: React.FC = () => {
             style={{
               backgroundColor: '#3d3a36',
               border: '1px solid rgba(168, 213, 162, 0.15)',
-              borderRadius: '16px',
-              padding: '2.5rem',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
             }}
           >
             {loading ? (
@@ -396,15 +446,15 @@ const UpdateProgressPage: React.FC = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '1.5rem',
-                  padding: '2rem 0',
+                  gap: '1rem',
+                  padding: '1.5rem 0',
                 }}
               >
                 <div
                   style={{
-                    width: '60px',
-                    height: '60px',
-                    border: '4px solid rgba(168, 213, 162, 0.2)',
+                    width: '40px',
+                    height: '40px',
+                    border: '3px solid rgba(168, 213, 162, 0.2)',
                     borderTopColor: '#a8d5a2',
                     borderRadius: '50%',
                     animation: 'spin 1s linear infinite',
@@ -413,11 +463,11 @@ const UpdateProgressPage: React.FC = () => {
                 <div
                   style={{
                     color: '#fffff0',
-                    fontSize: '1.25rem',
+                    fontSize: '1rem',
                     fontFamily: '"Lora", Georgia, serif',
                   }}
                 >
-                  Loading book data...
+                  Loading...
                 </div>
               </div>
             ) : (
@@ -426,13 +476,13 @@ const UpdateProgressPage: React.FC = () => {
                 {error && (
                   <div
                     style={{
-                      padding: '12px 16px',
-                      marginBottom: '1.5rem',
+                      padding: '10px 14px',
+                      marginBottom: '1rem',
                       backgroundColor: 'rgba(114, 47, 55, 0.2)',
                       border: '1px solid #722f37',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: '#ffffff',
-                      fontSize: '0.9rem',
+                      fontSize: '0.875rem',
                     }}
                   >
                     {error}
@@ -443,10 +493,10 @@ const UpdateProgressPage: React.FC = () => {
                 {book?.total_chapters && book.total_chapters > 0 && (
                   <div
                     style={{
-                      marginBottom: '2rem',
-                      padding: '1.5rem',
+                      marginBottom: '1.25rem',
+                      padding: '1rem',
                       backgroundColor: 'rgba(168, 213, 162, 0.08)',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       border: '1px solid rgba(168, 213, 162, 0.15)',
                     }}
                   >
@@ -506,7 +556,7 @@ const UpdateProgressPage: React.FC = () => {
                 )}
 
                 {/* Current Chapter */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label
                     htmlFor="current_chapter"
                     style={{
@@ -514,8 +564,8 @@ const UpdateProgressPage: React.FC = () => {
                       fontFamily: '"Playfair Display", Georgia, serif',
                       fontWeight: '600',
                       color: '#ffffff',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem',
+                      marginBottom: '0.4rem',
+                      fontSize: '0.95rem',
                     }}
                   >
                     Current Chapter
@@ -528,12 +578,12 @@ const UpdateProgressPage: React.FC = () => {
                     onChange={handleInputChange}
                     style={{
                       width: '100%',
-                      padding: '0.875rem 1rem',
+                      padding: '0.65rem 0.875rem',
                       backgroundColor: 'rgba(255, 255, 240, 0.05)',
                       border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: '#ffffff',
-                      fontSize: '1rem',
+                      fontSize: '0.95rem',
                       fontFamily: '"Lora", Georgia, serif',
                       transition: 'all 0.3s ease',
                     }}
@@ -555,7 +605,7 @@ const UpdateProgressPage: React.FC = () => {
                 </div>
 
                 {/* Reading Status */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label
                     htmlFor="reading_status"
                     style={{
@@ -563,8 +613,8 @@ const UpdateProgressPage: React.FC = () => {
                       fontFamily: '"Playfair Display", Georgia, serif',
                       fontWeight: '600',
                       color: '#ffffff',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem',
+                      marginBottom: '0.4rem',
+                      fontSize: '0.95rem',
                     }}
                   >
                     Reading Status
@@ -576,12 +626,12 @@ const UpdateProgressPage: React.FC = () => {
                     onChange={handleInputChange}
                     style={{
                       width: '100%',
-                      padding: '0.875rem 1rem',
+                      padding: '0.65rem 0.875rem',
                       backgroundColor: 'rgba(255, 255, 240, 0.05)',
                       border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: '#ffffff',
-                      fontSize: '1rem',
+                      fontSize: '0.95rem',
                       fontFamily: '"Lora", Georgia, serif',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
@@ -600,31 +650,32 @@ const UpdateProgressPage: React.FC = () => {
                   >
                     <option value="ToRead">To Read</option>
                     <option value="Reading">Reading</option>
+                    <option value="Completed">Completed</option>
                     <option value="OnHold">On Hold</option>
                     <option value="Abandoned">Abandoned</option>
                   </select>
                 </div>
 
                 {/* Chapters Completed */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label
+                <div style={{ marginBottom: '1rem' }}>
+                  <div
                     style={{
                       display: 'block',
                       fontFamily: '"Playfair Display", Georgia, serif',
                       fontWeight: '600',
                       color: '#ffffff',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem',
+                      marginBottom: '0.4rem',
+                      fontSize: '0.95rem',
                     }}
                   >
                     Chapters Completed ({progressData.chapters_completed.length}
                     )
-                  </label>
+                  </div>
                   <div
                     style={{
                       display: 'flex',
                       gap: '0.5rem',
-                      marginBottom: '0.75rem',
+                      marginBottom: '0.6rem',
                     }}
                   >
                     <input
@@ -633,12 +684,12 @@ const UpdateProgressPage: React.FC = () => {
                       onChange={(e) => setNewCompletedChapter(e.target.value)}
                       style={{
                         flex: 1,
-                        padding: '0.75rem 1rem',
+                        padding: '0.6rem 0.875rem',
                         backgroundColor: 'rgba(255, 255, 240, 0.05)',
                         border: '1px solid rgba(168, 213, 162, 0.2)',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         color: '#ffffff',
-                        fontSize: '1rem',
+                        fontSize: '0.95rem',
                         fontFamily: '"Lora", Georgia, serif',
                         transition: 'all 0.3s ease',
                       }}
@@ -662,14 +713,15 @@ const UpdateProgressPage: React.FC = () => {
                       onClick={handleAddCompletedChapter}
                       disabled={submitting || !newCompletedChapter}
                       style={{
-                        padding: '0.75rem 1.5rem',
-                        background:
+                        padding: '0.6rem 1.25rem',
+                        backgroundColor:
                           'linear-gradient(135deg, #a8d5a2 0%, #88b882 100%)',
                         border: 'none',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         color: '#1a2a3a',
-                        fontSize: '1rem',
+                        fontSize: '0.9rem',
                         fontWeight: '600',
+                        fontFamily: '"Lora", Georgia, serif',
                         cursor:
                           submitting || !newCompletedChapter
                             ? 'not-allowed'
@@ -687,10 +739,10 @@ const UpdateProgressPage: React.FC = () => {
                       style={{
                         display: 'flex',
                         flexWrap: 'wrap',
-                        gap: '0.5rem',
-                        padding: '1rem',
+                        gap: '0.4rem',
+                        padding: '0.75rem',
                         backgroundColor: 'rgba(168, 213, 162, 0.05)',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                       }}
                     >
                       {progressData.chapters_completed.map((chapter) => (
@@ -699,11 +751,11 @@ const UpdateProgressPage: React.FC = () => {
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            padding: '0.375rem 0.875rem',
+                            padding: '0.3rem 0.7rem',
                             backgroundColor: 'rgba(168, 213, 162, 0.2)',
                             color: '#a8d5a2',
-                            borderRadius: '20px',
-                            fontSize: '0.9rem',
+                            borderRadius: '16px',
+                            fontSize: '0.85rem',
                             fontWeight: '500',
                             fontFamily: '"Lora", Georgia, serif',
                           }}
@@ -715,11 +767,11 @@ const UpdateProgressPage: React.FC = () => {
                               handleRemoveCompletedChapter(chapter)
                             }
                             style={{
-                              marginLeft: '0.5rem',
+                              marginLeft: '0.4rem',
                               background: 'none',
                               border: 'none',
                               cursor: 'pointer',
-                              fontSize: '1.1rem',
+                              fontSize: '1rem',
                               color: '#a8d5a2',
                               padding: '0',
                               lineHeight: 1,
@@ -727,6 +779,12 @@ const UpdateProgressPage: React.FC = () => {
                               transition: 'opacity 0.2s ease',
                             }}
                             disabled={submitting}
+                            onFocus={(e) => {
+                              e.currentTarget.style.opacity = '1';
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.opacity = '0.7';
+                            }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.opacity = '1';
                             }}
@@ -743,7 +801,7 @@ const UpdateProgressPage: React.FC = () => {
                 </div>
 
                 {/* Last Read Position */}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label
                     htmlFor="last_read_position"
                     style={{
@@ -751,8 +809,8 @@ const UpdateProgressPage: React.FC = () => {
                       fontFamily: '"Playfair Display", Georgia, serif',
                       fontWeight: '600',
                       color: '#ffffff',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem',
+                      marginBottom: '0.4rem',
+                      fontSize: '0.95rem',
                     }}
                   >
                     Last Read Position
@@ -765,16 +823,16 @@ const UpdateProgressPage: React.FC = () => {
                     onChange={handleInputChange}
                     style={{
                       width: '100%',
-                      padding: '0.875rem 1rem',
+                      padding: '0.65rem 0.875rem',
                       backgroundColor: 'rgba(255, 255, 240, 0.05)',
                       border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: '#ffffff',
-                      fontSize: '1rem',
+                      fontSize: '0.95rem',
                       fontFamily: '"Lora", Georgia, serif',
                       transition: 'all 0.3s ease',
                     }}
-                    placeholder="e.g., Page 123, Chapter 5 paragraph 3"
+                    placeholder="Page number, chapter, or section"
                     disabled={submitting}
                     onFocus={(e) => {
                       e.currentTarget.style.borderColor = '#a8d5a2';
@@ -839,106 +897,66 @@ const UpdateProgressPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Mark Completed Quick Action */}
-                {progressData.reading_status !== 'Completed' && (
-                  <div
-                    style={{
-                      marginTop: '2rem',
-                      padding: '1.5rem',
-                      backgroundColor: 'rgba(114, 47, 55, 0.1)',
-                      border: '1px solid #722f37',
-                      borderRadius: '12px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <p
-                      style={{
-                        marginBottom: '1rem',
-                        fontSize: '1rem',
-                        color: '#ffffff',
-                        fontFamily: '"Lora", Georgia, serif',
-                      }}
-                    >
-                      Finished reading this book?
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleMarkCompleted}
-                      disabled={submitting}
-                      style={{
-                        padding: '0.875rem 2rem',
-                        background:
-                          'linear-gradient(135deg, #722f37 0%, #5a252c 100%)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        color: '#ffffff',
-                        fontSize: '1rem',
-                        fontWeight: '600',
-                        cursor: submitting ? 'not-allowed' : 'pointer',
-                        transition: 'all 0.3s ease',
-                        opacity: submitting ? 0.5 : 1,
-                      }}
-                    >
-                      {submitting ? 'Marking...' : 'Mark as Completed'}
-                    </button>
-                  </div>
-                )}
-
                 {/* Action Buttons */}
                 <div
                   style={{
                     display: 'flex',
-                    gap: '1rem',
+                    gap: '0.75rem',
                     justifyContent: 'flex-end',
-                    marginTop: '2rem',
-                    paddingTop: '1.5rem',
+                    marginTop: '1.5rem',
+                    paddingTop: '1rem',
                     borderTop: '1px solid rgba(168, 213, 162, 0.1)',
                   }}
                 >
                   <Link
-                    to={demoMode ? '/book-library?demo=true' : '/book-library'}
+                    to={
+                      demoMode
+                        ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
+                        : `/note-editor/${isbn}/${progressData.current_chapter}`
+                    }
                     style={{
-                      padding: '0.875rem 2rem',
-                      background: 'transparent',
-                      border: '2px solid rgba(168, 213, 162, 0.3)',
-                      borderRadius: '8px',
+                      padding: '0.65rem 1.5rem',
+                      background: 'rgba(168, 213, 162, 0.1)',
+                      border: '1px solid rgba(168, 213, 162, 0.3)',
+                      borderRadius: '6px',
                       color: '#a8d5a2',
-                      fontSize: '1rem',
+                      fontSize: '0.9rem',
                       fontWeight: '600',
                       textDecoration: 'none',
                       transition: 'all 0.3s ease',
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.backgroundColor =
-                        'rgba(168, 213, 162, 0.1)';
+                        'rgba(168, 213, 162, 0.15)';
                       e.currentTarget.style.borderColor = '#a8d5a2';
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.backgroundColor =
+                        'rgba(168, 213, 162, 0.1)';
                       e.currentTarget.style.borderColor =
                         'rgba(168, 213, 162, 0.3)';
                     }}
                   >
-                    Home
+                    ← Cancel
                   </Link>
                   <button
                     type="submit"
                     disabled={submitting}
                     style={{
-                      padding: '0.875rem 2rem',
+                      padding: '0.65rem 1.75rem',
                       background:
                         'linear-gradient(135deg, #a8d5a2 0%, #88b882 100%)',
                       border: 'none',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: '#1a2a3a',
-                      fontSize: '1rem',
+                      fontSize: '0.9rem',
                       fontWeight: '600',
                       cursor: submitting ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
                       opacity: submitting ? 0.5 : 1,
                     }}
                   >
-                    {submitting ? 'Updating...' : 'Update Progress'}
+                    {submitting ? 'Updating...' : 'Save'}
                   </button>
                 </div>
               </form>

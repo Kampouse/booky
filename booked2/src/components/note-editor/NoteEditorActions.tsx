@@ -6,6 +6,7 @@ interface NoteEditorActionsProps {
   note: string;
   demoMode: boolean;
   returnUrl: string;
+  hasUnsavedChanges: boolean;
 
   onSave: () => void;
 }
@@ -16,6 +17,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
   note,
   demoMode,
   returnUrl,
+  hasUnsavedChanges,
   onSave,
 }) => {
   const handleCancel = () => {
@@ -42,13 +44,24 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
       >
         <span
           style={{
-            color: 'rgba(255, 255, 240, 0.6)',
+            color: 'rgba(255,255, 240, 0.6)',
             fontSize: '0.85rem',
             fontFamily: '"Lora", Georgia, serif',
           }}
         >
-          💡 Tip: Press Ctrl/Cmd + S to save
+          💡 Ctrl/Cmd + S to save
         </span>
+        {hasUnsavedChanges && (
+          <span
+            style={{
+              color: '#e8c860',
+              fontSize: '0.85rem',
+              fontFamily: '"Lora", Georgia, serif',
+            }}
+          >
+            • Unsaved
+          </span>
+        )}
         <span
           style={{
             color: 'rgba(255, 255, 240, 0.6)',
@@ -67,35 +80,6 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           gap: '1rem',
         }}
       >
-        <button
-          type="button"
-          onClick={handleCancel}
-          onFocus={() => {}}
-          onBlur={() => {}}
-          style={{
-            padding: '0.875rem 2rem',
-            background: 'transparent',
-            border: '2px solid rgba(168, 213, 162, 0.3)',
-            borderRadius: '8px',
-            color: '#a8d5a2',
-            fontSize: '1rem',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            opacity: 1,
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(168, 213, 162, 0.1)';
-            e.currentTarget.style.borderColor = '#a8d5a2';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.borderColor = 'rgba(168, 213, 162, 0.3)';
-          }}
-        >
-          Cancel
-        </button>
-
         <button
           type="button"
           onClick={onSave}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { BookEntry } from '@/config';
 
 interface BookInfoProps {
@@ -6,10 +7,7 @@ interface BookInfoProps {
   chapterNumber: number;
 }
 
-export const BookInfo: React.FC<BookInfoProps> = ({
-  book,
-  chapterNumber,
-}) => {
+export const BookInfo: React.FC<BookInfoProps> = ({ book, chapterNumber }) => {
   const chaptersWithNotes = Object.keys(book?.chapter_notes || {})
     .map(Number)
     .sort((a, b) => a - b);
@@ -101,6 +99,37 @@ export const BookInfo: React.FC<BookInfoProps> = ({
           >
             Chapter {chapterNumber} · {chaptersWithNotes.length} notes total
           </div>
+
+          <Link
+            to={`/update-progress/${book?.isbn || ''}`}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: 'rgba(168, 213, 162, 0.15)',
+              border: '1px solid rgba(168, 213, 162, 0.3)',
+              borderRadius: '6px',
+              color: '#a8d5a2',
+              fontSize: '0.875rem',
+              fontFamily: '"Lora", Georgia, serif',
+              textDecoration: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor =
+                'rgba(168, 213, 162, 0.25)';
+              e.currentTarget.style.borderColor = '#a8d5a2';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor =
+                'rgba(168, 213, 162, 0.15)';
+              e.currentTarget.style.borderColor = 'rgba(168, 213, 162, 0.3)';
+            }}
+          >
+            <span>📊 Update Progress</span>
+          </Link>
         </div>
       )}
     </div>

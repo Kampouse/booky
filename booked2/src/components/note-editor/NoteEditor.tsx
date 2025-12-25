@@ -307,6 +307,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           note={note}
           demoMode={demoMode}
           returnUrl={returnUrl}
+          hasUnsavedChanges={hasUnsavedChanges}
           onSave={handleSave}
         />
       </div>
