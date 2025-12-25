@@ -92,6 +92,9 @@ importers:
       viem:
         specifier: ^2.30.5
         version: 2.43.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      zustand:
+        specifier: 2.2.0
+        version: 2.2.0(react@18.3.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.17.0
@@ -4470,6 +4473,11 @@ packages:
 
   zod@4.2.1:
     resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
+
+  zustand@2.2.0:
+    resolution: {integrity: sha512-D7OcwBsMEDSuYRwIpxagSHaSe3WeYLgw4Ft+bWD4nGeA6V4Jsks7amcjfdm5WLuIM4i8juPWD7MsdHV6JiqVwA==}
+    peerDependencies:
+      react: '>=16.8'
 
   zustand@5.0.0:
     resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
@@ -10916,6 +10924,10 @@ snapshots:
     optional: true
 
   zod@4.2.1: {}
+
+  zustand@2.2.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   zustand@5.0.0(@types/react@18.3.27)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1)):
     optionalDependencies:

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { Navigation } from '@/components/navigation';
 import Home from '@/pages/home';
 import BookLibrary from '@/pages/book_library';
+import NoteEditorPage from '@/pages/note_editor';
 import UpdateProgressPage from '@/pages/update_progress';
 import { HelloNearContract, NetworkId, BookyContract } from '@/config';
 
@@ -25,6 +26,7 @@ import { setupCoin98Wallet } from '@near-wallet-selector/coin98-wallet';
 import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
 
 import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
+import { NoteProvider } from '@/contexts';
 
 // Types
 import type { WalletModuleFactory } from '@near-wallet-selector/core';
@@ -48,17 +50,23 @@ const walletSelectorConfig = {
 function App() {
   return (
     <WalletSelectorProvider config={walletSelectorConfig}>
-      <BrowserRouter>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/book-library" element={<BookLibrary />} />
-          <Route
-            path="/update-progress/:isbn"
-            element={<UpdateProgressPage />}
-          />
-        </Routes>
-      </BrowserRouter>
+      <NoteProvider>
+        <BrowserRouter>
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/book-library" element={<BookLibrary />} />
+            <Route
+              path="/update-progress/:isbn"
+              element={<UpdateProgressPage />}
+            />
+            <Route
+              path="/note-editor/:isbn/:chapter"
+              element={<NoteEditorPage />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </NoteProvider>
     </WalletSelectorProvider>
   );
 }

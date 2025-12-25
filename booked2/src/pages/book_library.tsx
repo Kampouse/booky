@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useBookyContract } from '@/lib/bookyContract';
 import { BookEntry } from '@/config';
-import { AddBookForm, BookCard, ChapterNotes } from '@/components/book-library';
-import BookNotes from './book_notes';
+import { AddBookForm, BookCard } from '@/components/book-library';
 import styles from '@/styles/book-library.module.css';
 
 const BookLibrary = () => {
@@ -18,8 +17,6 @@ const BookLibrary = () => {
 
   // Modal states
   const [showAddBookForm, setShowAddBookForm] = useState(false);
-  const [selectedBookForNotes, setSelectedBookForNotes] =
-    useState<BookEntry | null>(null);
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,21 +148,6 @@ const BookLibrary = () => {
     }
   };
 
-  const handleViewNotes = (isbn: string) => {
-    const book = books.find((b) => b.isbn === isbn);
-    if (book) {
-      setSelectedBookForNotes(book);
-    }
-  };
-
-  const handleNoteUpdate = () => {
-    if (demoMode) {
-      loadDemoLibrary();
-    } else {
-      loadLibrary();
-    }
-  };
-
   const filteredBooks = books.filter((book) => {
     const matchesSearch =
       searchQuery === '' ||
@@ -178,26 +160,6 @@ const BookLibrary = () => {
 
     return matchesSearch && matchesStatus;
   });
-
-  // Show BookNotes page if a book is selected
-  if (selectedBookForNotes) {
-    return (
-      <BookNotes
-        book={selectedBookForNotes}
-        onBack={() => {
-          setSelectedBookForNotes(null);
-          if (demoMode) {
-            loadDemoLibrary();
-          } else {
-            loadLibrary();
-          }
-        }}
-        demoMode={demoMode}
-        demoBooks={books}
-        setDemoBooks={setBooks}
-      />
-    );
-  }
 
   return (
     <div className={styles.libraryContainer}>
@@ -379,12 +341,7 @@ const BookLibrary = () => {
           }}
         >
           {filteredBooks.map((book) => (
-            <BookCard
-              key={book.isbn}
-              book={book}
-              onViewNotes={handleViewNotes}
-              demoMode={demoMode}
-            />
+            <BookCard key={book.isbn} book={book} demoMode={demoMode} />
           ))}
         </div>
       ) : !loading && filteredBooks.length === 0 ? (
