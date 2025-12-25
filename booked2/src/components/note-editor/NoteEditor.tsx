@@ -1,11 +1,9 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import type { BookEntry } from '@/config';
+import { useNavigate } from 'react-router';
 import { useBook, useAddChapterNote } from '@/lib/useBookyQuery';
 import { useNoteContext } from '@/contexts';
 import { useWalletSelector } from '@near-wallet-selector/react-hook';
 import { NoteEditorHeader } from './NoteEditorHeader';
-import { BookInfo } from './BookInfo';
-import { ChapterNavigation } from './ChapterNavigation';
 import { NoteEditorContent } from './NoteEditorContent';
 import { NoteEditorActions } from './NoteEditorActions';
 import { SaveStatusIndicator } from './SaveStatusIndicator';
@@ -23,6 +21,8 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   demoMode = false,
   returnUrl = '/book-library',
 }) => {
+  const navigate = useNavigate();
+
   // React Query hooks with automatic caching
   const {
     data: book,
@@ -255,6 +255,14 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     }
   }, [queryError]);
 
+  // Navigation handlers
+  const handleChapterChange = (newChapter: number) => {
+    const url = demoMode
+      ? `/note-editor/${isbn}/${newChapter}?demo=true`
+      : `/note-editor/${isbn}/${newChapter}`;
+    navigate(url);
+  };
+
   return (
     <div
       style={{
@@ -264,39 +272,18 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         flexDirection: 'column',
       }}
     >
-      {/* Header */}
+      {/* Compact Header */}
       <NoteEditorHeader
         demoMode={demoMode}
         returnUrl={returnUrl}
         accountId={signedAccountId}
         saveStatus={saveStatus}
+        book={book || null}
+        chapterNumber={chapterNumber}
+        totalChapters={book?.total_chapters || 0}
+        chaptersWithNotes={chaptersWithNotes}
+        onChapterChange={handleChapterChange}
       />
-
-      {/* Book Info & Navigation */}
-      <div
-        style={{
-          padding: '0 2rem 1.5rem 2rem',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '2rem',
-            flexWrap: 'wrap',
-          }}
-        >
-          <BookInfo book={book || null} chapterNumber={chapterNumber} />
-          <ChapterNavigation
-            isbn={isbn}
-            book={book || null}
-            chapterNumber={chapterNumber}
-            demoMode={demoMode}
-            chaptersWithNotes={chaptersWithNotes}
-          />
-        </div>
-      </div>
 
       {/* Editor Section */}
       <div
@@ -304,7 +291,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          padding: '0 2rem 2rem 2rem',
+          padding: '1.5rem 2rem 2rem 2rem',
         }}
       >
         <NoteEditorContent
