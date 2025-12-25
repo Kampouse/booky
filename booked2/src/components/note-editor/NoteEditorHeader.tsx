@@ -55,6 +55,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
         {/* Left: Back Button */}
         <Link
           to={returnLink}
+          className="back-button"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -107,6 +108,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
               flex: 1,
               minWidth: 0,
             }}
+            className="book-info"
           >
             <Link
               to={returnLink}
@@ -121,6 +123,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
+              className="book-title-link"
               onFocus={(e) => {
                 e.currentTarget.style.color = '#c5e8c0';
               }}
@@ -178,6 +181,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
                 transition: 'all 0.2s ease',
                 whiteSpace: 'nowrap',
               }}
+              className="chapter-select"
               onFocus={(e) => {
                 e.currentTarget.style.backgroundColor =
                   'rgba(168, 213, 162, 0.25)';
@@ -220,6 +224,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
                 fontSize: '0.8rem',
                 fontFamily: '"Lora", Georgia, serif',
               }}
+              className="chapter-total"
             >
               of {totalChapters}
             </span>
@@ -252,7 +257,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
                 fontFamily: '"Lora", Georgia, serif',
                 whiteSpace: 'nowrap',
               }}
-              className="progress-badge"
+              className="progress-badge progress-percentage"
             >
               <span
                 style={{
@@ -262,7 +267,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
               >
                 {calculateProgress().toFixed(0)}%
               </span>
-              <span style={{ opacity: 0.6 }}>
+              <span style={{ opacity: 0.6 }} className="notes-count">
                 · {chaptersWithNotes.length} notes
               </span>
             </div>
@@ -271,13 +276,14 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
           {/* Update Progress Link */}
           <Link
             to={`/update-progress/${book?.isbn || ''}`}
+            className="update-progress-link"
             style={{
-              padding: '0.4rem 0.75rem',
+              padding: '0.35rem 0.6rem',
               backgroundColor: 'rgba(168, 213, 162, 0.15)',
               border: '1px solid rgba(168, 213, 162, 0.3)',
               borderRadius: '4px',
               color: '#a8d5a2',
-              fontSize: '0.8rem',
+              fontSize: '0.75rem',
               fontWeight: '500',
               fontFamily: '"Lora", Georgia, serif',
               textDecoration: 'none',
@@ -312,6 +318,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
           {/* Wallet Warning */}
           {!accountId && (
             <div
+              className="wallet-warning"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -371,9 +378,9 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
 
         @media (max-width: 640px) {
           .note-editor-header {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 0.75rem !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 0.5rem !important;
           }
 
           .note-editor-header > div:first-child {
@@ -381,7 +388,8 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
           }
 
           .note-editor-header > div:nth-child(2) {
-            justify-content: space-between;
+            justify-content: center;
+            flex: 1;
           }
 
           .note-editor-header > div:nth-child(3) {
@@ -390,8 +398,51 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
         }
 
         @media (max-width: 500px) {
+          .note-editor-header {
+            gap: 0.375rem !important;
+          }
+
+          .back-button {
+            display: none !important;
+          }
+
+          .progress-percentage {
+            display: none !important;
+          }
+
           .author-name {
             display: none !important;
+          }
+
+          .chapter-total {
+            display: none !important;
+          }
+
+          .progress-badge .notes-count {
+            display: none !important;
+          }
+
+          .update-progress-link {
+            display: flex !important;
+            padding: 0.3rem 0.5rem !important;
+            font-size: 0.7rem !important;
+          }
+
+          .wallet-warning {
+            display: none !important;
+          }
+
+          .book-info {
+            max-width: 35%;
+          }
+
+          .chapter-select {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.75rem !important;
+          }
+
+          .book-title-link {
+            font-size: 0.85rem !important;
           }
         }
       `}</style>

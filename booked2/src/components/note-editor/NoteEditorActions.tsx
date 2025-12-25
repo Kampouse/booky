@@ -40,6 +40,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
         paddingTop: '1.5rem',
         borderTop: '1px solid rgba(168, 213, 162, 0.1)',
       }}
+      className="actions-container"
     >
       <div
         style={{
@@ -47,6 +48,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           alignItems: 'center',
           gap: '1rem',
         }}
+        className="actions-left"
       >
         <span
           style={{
@@ -54,6 +56,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
             fontSize: '0.85rem',
             fontFamily: '"Lora", Georgia, serif',
           }}
+          className="save-hint"
         >
           💡 Ctrl/Cmd + S to save
         </span>
@@ -65,6 +68,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
                 fontSize: '0.85rem',
                 fontFamily: '"Lora", Georgia, serif',
               }}
+              className="unsaved-indicator"
             >
               • Unsaved
             </span>
@@ -84,6 +88,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
                   transition: 'all 0.2s ease',
                   fontFamily: '"Lora", Georgia, serif',
                 }}
+                className="view-saved-btn"
                 onFocus={(e) => {
                   e.currentTarget.style.background =
                     'rgba(168, 213, 162, 0.25)';
@@ -120,6 +125,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
             fontSize: '0.85rem',
             fontFamily: '"Lora", Georgia, serif',
           }}
+          className="char-count"
         >
           📝 {note.length} characters
         </span>
@@ -131,6 +137,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           alignItems: 'center',
           gap: '1rem',
         }}
+        className="actions-right"
       >
         <button
           type="button"
@@ -138,6 +145,7 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           onFocus={() => {}}
           onBlur={() => {}}
           disabled={saving || !accountId}
+          className="save-btn"
           style={
             saving || !accountId
               ? {
@@ -406,6 +414,63 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           </div>
         </div>
       )}
+
+      <style>{`
+      @media (max-width: 640px) {
+        .actions-container {
+          flex-direction: row !important;
+          gap: 0.5rem !important;
+        }
+
+        .actions-left {
+          gap: 0.5rem !important;
+          flex: 1;
+          min-width: 0;
+        }
+
+        .save-hint {
+          display: none !important;
+        }
+
+        .char-count {
+          display: none !important;
+        }
+
+        .unsaved-indicator {
+          font-size: 0.75rem !important;
+        }
+
+        .view-saved-btn {
+          padding: 0.3rem 0.6rem !important;
+          font-size: 0.75rem !important;
+        }
+
+        .save-btn {
+          padding: 0.6rem 1.2rem !important;
+          font-size: 0.875rem !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .actions-container {
+          gap: 0.375rem !important;
+        }
+
+        .unsaved-indicator {
+          font-size: 0.7rem !important;
+        }
+
+        .view-saved-btn {
+          padding: 0.25rem 0.5rem !important;
+          font-size: 0.7rem !important;
+        }
+
+        .save-btn {
+          padding: 0.5rem 1rem !important;
+          font-size: 0.8rem !important;
+        }
+      }
+    `}</style>
     </div>
   );
 };
