@@ -231,6 +231,18 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     .map(Number)
     .sort((a, b) => a - b);
 
+  const handleRestoreSaved = useCallback(
+    (savedContent: string) => {
+      const savedNote = savedContent || '';
+      setNote(savedNote);
+      setHasUnsavedChanges(false);
+      setSaveStatus('saved');
+      markAsSaved(isbn, chapterNumber);
+      clearDraft(isbn, chapterNumber);
+    },
+    [isbn, chapterNumber, markAsSaved, clearDraft],
+  );
+
   const handleCloseError = () => {
     setError(null);
     setSaveStatus('idle');
@@ -305,10 +317,10 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           saving={saving}
           accountId={signedAccountId}
           note={note}
-          demoMode={demoMode}
-          returnUrl={returnUrl}
           hasUnsavedChanges={hasUnsavedChanges}
+          savedNoteContent={book?.chapter_notes?.[chapterNumber]}
           onSave={handleSave}
+          onRestoreSaved={handleRestoreSaved}
         />
       </div>
 

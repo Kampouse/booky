@@ -40,7 +40,7 @@ const UpdateProgressPage: React.FC = () => {
         current_chapter: book.current_chapter,
         chapters_completed: book.chapters_read || [],
         last_read_position: book.last_read_position || '0',
-        last_read_date: book.last_read_date || new Date().toISOString(),
+        last_read_date: new Date().toISOString(),
         reading_status: book.reading_status,
       });
     }
@@ -70,7 +70,7 @@ const UpdateProgressPage: React.FC = () => {
           current_chapter: bookData.current_chapter,
           chapters_completed: bookData.chapters_read || [],
           last_read_position: bookData.last_read_position || '0',
-          last_read_date: bookData.last_read_date || new Date().toISOString(),
+          last_read_date: new Date().toISOString(),
           reading_status: bookData.reading_status,
         });
       } else {
@@ -555,56 +555,7 @@ const UpdateProgressPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Current Chapter */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <label
-                    htmlFor="current_chapter"
-                    style={{
-                      display: 'block',
-                      fontFamily: '"Playfair Display", Georgia, serif',
-                      fontWeight: '600',
-                      color: '#ffffff',
-                      marginBottom: '0.4rem',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    Current Chapter
-                  </label>
-                  <input
-                    type="number"
-                    id="current_chapter"
-                    name="current_chapter"
-                    value={progressData.current_chapter || ''}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      padding: '0.65rem 0.875rem',
-                      backgroundColor: 'rgba(255, 255, 240, 0.05)',
-                      border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '6px',
-                      color: '#ffffff',
-                      fontSize: '0.95rem',
-                      fontFamily: '"Lora", Georgia, serif',
-                      transition: 'all 0.3s ease',
-                    }}
-                    placeholder="Current chapter number"
-                    min="0"
-                    max={book?.total_chapters || undefined}
-                    disabled={submitting}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#a8d5a2';
-                      e.currentTarget.style.boxShadow =
-                        '0 0 0 3px rgba(168, 213, 162, 0.15)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor =
-                        'rgba(168, 213, 162, 0.2)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                {/* Reading Status */}
+                {/* Reading Status - First Decision */}
                 <div style={{ marginBottom: '1rem' }}>
                   <label
                     htmlFor="reading_status"
@@ -654,6 +605,55 @@ const UpdateProgressPage: React.FC = () => {
                     <option value="OnHold">On Hold</option>
                     <option value="Abandoned">Abandoned</option>
                   </select>
+                </div>
+
+                {/* Current Chapter - Most Frequent Update */}
+                <div style={{ marginBottom: '1rem' }}>
+                  <label
+                    htmlFor="current_chapter"
+                    style={{
+                      display: 'block',
+                      fontFamily: '"Playfair Display", Georgia, serif',
+                      fontWeight: '600',
+                      color: '#ffffff',
+                      marginBottom: '0.4rem',
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    Current Chapter
+                  </label>
+                  <input
+                    type="number"
+                    id="current_chapter"
+                    name="current_chapter"
+                    value={progressData.current_chapter || ''}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.875rem',
+                      backgroundColor: 'rgba(255, 255, 240, 0.05)',
+                      border: '1px solid rgba(168, 213, 162, 0.2)',
+                      borderRadius: '6px',
+                      color: '#ffffff',
+                      fontSize: '0.95rem',
+                      fontFamily: '"Lora", Georgia, serif',
+                      transition: 'all 0.3s ease',
+                    }}
+                    placeholder="Current chapter number"
+                    min="0"
+                    max={book?.total_chapters || undefined}
+                    disabled={submitting}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = '#a8d5a2';
+                      e.currentTarget.style.boxShadow =
+                        '0 0 0 3px rgba(168, 213, 162, 0.15)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor =
+                        'rgba(168, 213, 162, 0.2)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
                 </div>
 
                 {/* Chapters Completed */}
@@ -800,101 +800,119 @@ const UpdateProgressPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Last Read Position */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <label
-                    htmlFor="last_read_position"
-                    style={{
-                      display: 'block',
-                      fontFamily: '"Playfair Display", Georgia, serif',
-                      fontWeight: '600',
-                      color: '#ffffff',
-                      marginBottom: '0.4rem',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    Last Read Position
-                  </label>
-                  <input
-                    type="text"
-                    id="last_read_position"
-                    name="last_read_position"
-                    value={progressData.last_read_position || ''}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      padding: '0.65rem 0.875rem',
-                      backgroundColor: 'rgba(255, 255, 240, 0.05)',
-                      border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '6px',
-                      color: '#ffffff',
-                      fontSize: '0.95rem',
-                      fontFamily: '"Lora", Georgia, serif',
-                      transition: 'all 0.3s ease',
-                    }}
-                    placeholder="Page number, chapter, or section"
-                    disabled={submitting}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#a8d5a2';
-                      e.currentTarget.style.boxShadow =
-                        '0 0 0 3px rgba(168, 213, 162, 0.15)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor =
-                        'rgba(168, 213, 162, 0.2)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                {/* Last Read Date */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label
-                    htmlFor="last_read_date"
-                    style={{
-                      display: 'block',
-                      fontFamily: '"Playfair Display", Georgia, serif',
-                      fontWeight: '600',
-                      color: '#ffffff',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem',
-                    }}
-                  >
-                    Last Read Date
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="last_read_date"
-                    name="last_read_date"
-                    value={
-                      progressData.last_read_date
-                        ? progressData.last_read_date.slice(0, 16)
-                        : ''
+                {/* Last Read Position and Last Read Date - Fine-tuning Details */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '1rem',
+                    marginBottom: '1.5rem',
+                  }}
+                  className="form-grid-two-columns"
+                >
+                  <style>{`
+                    @media (max-width: 768px) {
+                      .form-grid-two-columns {
+                        grid-template-columns: 1fr !important;
+                      }
                     }
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      padding: '0.875rem 1rem',
-                      backgroundColor: 'rgba(255, 255, 240, 0.05)',
-                      border: '1px solid rgba(168, 213, 162, 0.2)',
-                      borderRadius: '8px',
-                      color: '#ffffff',
-                      fontSize: '1rem',
-                      fontFamily: '"Lora", Georgia, serif',
-                      transition: 'all 0.3s ease',
-                    }}
-                    disabled={submitting}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = '#a8d5a2';
-                      e.currentTarget.style.boxShadow =
-                        '0 0 0 3px rgba(168, 213, 162, 0.15)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor =
-                        'rgba(168, 213, 162, 0.2)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  />
+                  `}</style>
+                  {/* Last Read Position */}
+                  <div>
+                    <label
+                      htmlFor="last_read_position"
+                      style={{
+                        display: 'block',
+                        fontFamily: '"Playfair Display", Georgia, serif',
+                        fontWeight: '600',
+                        color: '#ffffff',
+                        marginBottom: '0.4rem',
+                        fontSize: '0.95rem',
+                      }}
+                    >
+                      Last Read Position
+                    </label>
+                    <input
+                      type="text"
+                      id="last_read_position"
+                      name="last_read_position"
+                      value={progressData.last_read_position || ''}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '0.65rem 0.875rem',
+                        backgroundColor: 'rgba(255, 255, 240, 0.05)',
+                        border: '1px solid rgba(168, 213, 162, 0.2)',
+                        borderRadius: '6px',
+                        color: '#ffffff',
+                        fontSize: '0.95rem',
+                        fontFamily: '"Lora", Georgia, serif',
+                        transition: 'all 0.3s ease',
+                      }}
+                      placeholder="Page number, chapter, or section"
+                      disabled={submitting}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#a8d5a2';
+                        e.currentTarget.style.boxShadow =
+                          '0 0 0 3px rgba(168, 213, 162, 0.15)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor =
+                          'rgba(168, 213, 162, 0.2)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
+
+                  {/* Last Read Date */}
+                  <div>
+                    <label
+                      htmlFor="last_read_date"
+                      style={{
+                        display: 'block',
+                        fontFamily: '"Playfair Display", Georgia, serif',
+                        fontWeight: '600',
+                        color: '#ffffff',
+                        marginBottom: '0.4rem',
+                        fontSize: '0.95rem',
+                      }}
+                    >
+                      Last Read Date
+                    </label>
+                    <input
+                      type="datetime-local"
+                      id="last_read_date"
+                      name="last_read_date"
+                      value={
+                        progressData.last_read_date
+                          ? progressData.last_read_date.slice(0, 16)
+                          : ''
+                      }
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '0.65rem 0.875rem',
+                        backgroundColor: 'rgba(255, 255, 240, 0.05)',
+                        border: '1px solid rgba(168, 213, 162, 0.2)',
+                        borderRadius: '6px',
+                        color: '#ffffff',
+                        fontSize: '0.95rem',
+                        fontFamily: '"Lora", Georgia, serif',
+                        transition: 'all 0.3s ease',
+                      }}
+                      disabled={submitting}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = '#a8d5a2';
+                        e.currentTarget.style.boxShadow =
+                          '0 0 0 3px rgba(168, 213, 162, 0.15)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor =
+                          'rgba(168, 213, 162, 0.2)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* Action Buttons */}
