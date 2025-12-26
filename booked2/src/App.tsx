@@ -5,6 +5,7 @@ import Home from '@/pages/home';
 import BookLibrary from '@/pages/book_library';
 import NoteEditorPage from '@/pages/note_editor';
 import UpdateProgressPage from '@/pages/update_progress';
+import ViewAllNotes from '@/pages/view_all_notes';
 import { HelloNearContract, NetworkId, BookyContract } from '@/config';
 
 import '@near-wallet-selector/modal-ui/styles.css';
@@ -25,10 +26,10 @@ import type { WalletModuleFactory } from '@near-wallet-selector/core';
 const walletSelectorConfig = {
   network: {
     networkId: NetworkId,
-    nodeUrl: 'https://rpc.testnet.near.org',
-    walletUrl: 'https://testnet.mynearwallet.com/',
-    helperUrl: 'https://helper.testnet.near.org',
-    explorerUrl: 'https://testnet.nearblocks.io',
+    nodeUrl: 'https://rpc.mainnet.near.org',
+    walletUrl: 'https://app.mynearwallet.com/',
+    helperUrl: 'https://helper.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
   },
   debug: true,
   modules: [
@@ -58,6 +59,7 @@ function App() {
               path="/note-editor/:isbn/:chapter"
               element={<NoteEditorPage />}
             />
+            <Route path="/view-all-notes/:isbn" element={<ViewAllNotes />} />
           </Routes>
         </BrowserRouter>
       </NoteProvider>

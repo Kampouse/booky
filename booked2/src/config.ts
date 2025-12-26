@@ -1,9 +1,18 @@
 const contractPerNetwork = {
-  mainnet: 'booky.near',
+  mainnet: 'jemartel.near',
   testnet: 'quixotic-hour.testnet',
 };
 
-export const NetworkId = 'testnet';
+export const NetworkId = 'mainnet';
+
+// Mainnet configuration
+export const NetworkConfig = {
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  walletUrl: 'https://app.mynearwallet.com/',
+  helperUrl: 'https://helper.mainnet.near.org',
+  explorerUrl: 'https://nearblocks.io',
+};
+
 export const HelloNearContract = contractPerNetwork[NetworkId];
 export const BookyContract = contractPerNetwork[NetworkId];
 

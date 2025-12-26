@@ -243,6 +243,66 @@ near view your-account.testnet get_reading_stats '{
 
 ---
 
+## Convenience Scripts
+
+Shell scripts are available in the `scripts/` folder for easier interaction with the contract. These scripts provide a user-friendly CLI interface without needing to remember NEAR CLI syntax.
+
+### Quick Start with Scripts
+
+```bash
+# View your library
+./scripts/view_library.sh
+
+# Add a book
+./scripts/add_book.sh -i "978-0451524935" -t "1984" -u "George Orwell"
+
+# Add a chapter note
+./scripts/add_note.sh -i "978-0451524935" -n 3 -m "Great quote on page 45"
+
+# View all notes for a book
+./scripts/view_notes.sh -i "978-0451524935"
+
+# Update reading progress
+./scripts/update_progress.sh -i "978-0451524935" -h 5 -s "Reading"
+```
+
+### Available Scripts
+
+- **Book Management**: `add_book.sh`, `update_book.sh`, `delete_book.sh`
+- **Note Management**: `add_note.sh`, `delete_note.sh`, `view_notes.sh`
+- **Reading Progress**: `update_progress.sh`
+- **Viewing**: `view_library.sh`
+- **Utilities**: `verify_deployment_cost.sh`
+
+### Interactive Mode
+
+Most scripts support interactive mode - just run them without arguments and follow the prompts:
+
+```bash
+./scripts/add_book.sh
+./scripts/add_note.sh
+./scripts/view_notes.sh
+```
+
+### Configuration
+
+Set environment variables for convenience:
+
+```bash
+export CONTRACT_ID=your-contract.testnet
+export ACCOUNT_ID=your-account.testnet
+```
+
+Then use scripts without specifying accounts each time:
+
+```bash
+./scripts/add_book.sh -i "978-0451524935" -t "1984"
+```
+
+For detailed documentation of all scripts, see [`scripts/README.md`](./scripts/README.md).
+
+---
+
 ## Cost Estimation
 
 | Operation | Estimated Cost (NEAR) | USD* |

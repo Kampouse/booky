@@ -81,6 +81,14 @@ const BookCard: React.FC<BookCardProps> = ({ book, demoMode = false }) => {
         >
           {hasNotes ? 'Open Book Notes' : 'Start Taking Notes'}
         </Link>
+        {hasNotes && (
+          <Link
+            to={`/view-all-notes/${book.isbn}${demoMode ? '?demo=true' : ''}`}
+            className={`${styles.bookCardActionButton} ${styles.bookCardActionTertiary}`}
+          >
+            View All Notes
+          </Link>
+        )}
         <Link
           to={`/update-progress/${book.isbn}${demoMode ? '?demo=true' : ''}`}
           className={`${styles.bookCardActionButton} ${styles.bookCardActionSecondary}`}

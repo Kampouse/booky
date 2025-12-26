@@ -282,6 +282,19 @@
     transform: translateY(-1px);
 }
 
+.bookCardActionTertiary {
+    background: transparent;
+    color: #2d4a3e;
+    border: 1px solid #a8d5a2;
+}
+
+.bookCardActionTertiary:hover,
+.bookCardActionTertiary:active {
+    background: #a8d5a2;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
 /* Notes Indicator */
 .bookCardNotesIndicator {
     margin-top: 0.75rem;
