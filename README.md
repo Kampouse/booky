@@ -1,6 +1,8 @@
 # Booky - Personal Book Library Storage on NEAR
 
-**Objective**: Immutable, tamper-proof book catalog storage on the NEAR blockchain.
+[![GitHub Repository](https://img.shields.io/badge/Github-Kampouse%2Fbooky-blue?logo=github)](https://github.com/Kampouse/booky)
+
+**Objective**: Immutable, tamper-proof book catalog storage on NEAR blockchain.
 
 **Core Benefits**:
 - **True Ownership**: Your book data is permanently tied to your NEAR account
