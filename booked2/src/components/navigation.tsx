@@ -127,6 +127,7 @@ export const Navigation = () => {
             {[
               { path: '/', label: 'Home', icon: '🏠' },
               { path: '/book-library', label: 'My Library', icon: '📖' },
+              { path: '/friend-library', label: 'Friend Library', icon: '👥' },
             ].map((link) => (
               <li className="nav-item" key={link.label}>
                 <Link

@@ -101,7 +101,7 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book, chapterNumber }) => {
           </div>
 
           <Link
-            to={`/update-progress/${book?.isbn || ''}`}
+            to={`/update-progress/${book?.isbn || ''}?chapter=${chapterNumber}`}
             style={{
               padding: '0.5rem 1rem',
               backgroundColor: 'rgba(168, 213, 162, 0.15)',

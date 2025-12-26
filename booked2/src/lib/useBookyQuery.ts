@@ -16,6 +16,10 @@ export const queryKeys = {
   readingStats: (accountId: string) => ['readingStats', accountId] as const,
   currentlyReading: (accountId: string) =>
     ['currentlyReading', accountId] as const,
+  followedAccounts: (accountId: string) =>
+    ['followedAccounts', accountId] as const,
+  userLibrary: (accountId: string) => ['userLibrary', accountId] as const,
+  userStats: (accountId: string) => ['userStats', accountId] as const,
 } as const;
 
 // ========================================
@@ -420,6 +424,97 @@ export const useStartReading = () => {
         // @ts-ignore
         queryClient.invalidateQueries({
           queryKey: queryKeys.book(accountId, isbn),
+        });
+      }
+    },
+  });
+};
+
+// ========================================
+// FOLLOWING FEATURE - Track other users' libraries
+// ========================================
+export const useFollowedAccounts = (accountId?: string | null) => {
+  const contract = useBookyContract();
+
+  // @ts-ignore
+  return useQuery({
+    // @ts-ignore
+    queryKey: queryKeys.followedAccounts(
+      accountId || contract.accountId || 'unknown',
+    ),
+    // @ts-ignore
+    queryFn: () => contract.getFollowedAccounts(accountId),
+    enabled: !!(accountId || contract.accountId),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+export const useUserLibrary = (accountId: string) => {
+  const contract = useBookyContract();
+
+  // @ts-ignore
+  return useQuery({
+    // @ts-ignore
+    queryKey: queryKeys.userLibrary(accountId),
+    // @ts-ignore
+    queryFn: () => contract.getUserLibrary(accountId),
+    enabled: !!accountId,
+    staleTime: 5 * 60 * 1000, // 5 minutes - libraries don't change often
+  });
+};
+
+export const useUserStats = (accountId: string) => {
+  const contract = useBookyContract();
+
+  // @ts-ignore
+  return useQuery({
+    // @ts-ignore
+    queryKey: queryKeys.userStats(accountId),
+    // @ts-ignore
+    queryFn: () => contract.getUserStats(accountId),
+    enabled: !!accountId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useFollowAccount = () => {
+  const queryClient = useQueryClient();
+  const contract = useBookyContract();
+  const accountId = contract.accountId || '';
+
+  return useMutation({
+    // @ts-ignore
+    mutationFn: (accountIdToFollow: string) =>
+      contract.followAccount(accountIdToFollow),
+    onSuccess: () => {
+      // Invalidate followed accounts list
+      // @ts-ignore
+      if (accountId) {
+        // @ts-ignore
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.followedAccounts(accountId),
+        });
+      }
+    },
+  });
+};
+
+export const useUnfollowAccount = () => {
+  const queryClient = useQueryClient();
+  const contract = useBookyContract();
+  const accountId = contract.accountId || '';
+
+  return useMutation({
+    // @ts-ignore
+    mutationFn: (accountIdToUnfollow: string) =>
+      contract.unfollowAccount(accountIdToUnfollow),
+    onSuccess: () => {
+      // Invalidate followed accounts list
+      // @ts-ignore
+      if (accountId) {
+        // @ts-ignore
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.followedAccounts(accountId),
         });
       }
     },

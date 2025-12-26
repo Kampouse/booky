@@ -1,10 +1,9 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { useBook, useAllChapterNotes } from '@/lib/useBookyQuery';
 import styles from '@/styles/view-all-notes.module.css';
 
 const ViewAllNotes: React.FC = () => {
   const { isbn } = useParams<{ isbn: string }>();
-  const navigate = useNavigate();
 
   const {
     data: book,
@@ -23,13 +22,9 @@ const ViewAllNotes: React.FC = () => {
     return (
       <div className={styles.emptyContainer}>
         <p className={styles.errorText}>No ISBN provided</p>
-        <button
-          onClick={() => navigate('/book-library')}
-          type="button"
-          className={styles.minimalButton}
-        >
+        <Link to="/book-library" className={styles.minimalButton}>
           ← Library
-        </button>
+        </Link>
       </div>
     );
   }
@@ -48,13 +43,9 @@ const ViewAllNotes: React.FC = () => {
         <p className={styles.errorText}>
           {bookError ? 'Failed to load book' : 'Failed to load notes'}
         </p>
-        <button
-          onClick={() => navigate('/book-library')}
-          type="button"
-          className={styles.minimalButton}
-        >
+        <Link to="/book-library" className={styles.minimalButton}>
           ← Library
-        </button>
+        </Link>
       </div>
     );
   }
@@ -70,22 +61,17 @@ const ViewAllNotes: React.FC = () => {
     return Math.min(Math.max(progress, 0), 100);
   };
 
-  const handleEditNote = (chapter: number) => {
-    navigate(`/note-editor/${isbn}/${chapter}`);
-  };
-
   return (
     <div className={styles.container}>
       {/* Minimal Header */}
       <header className={styles.header}>
-        <button
-          onClick={() => navigate(-1)}
-          type="button"
+        <Link
+          to="/book-library"
           className={styles.backButton}
           aria-label="Go back"
         >
           ←
-        </button>
+        </Link>
 
         <div className={styles.headerContent}>
           <h1 className={styles.title}>{book.title}</h1>
@@ -116,14 +102,13 @@ const ViewAllNotes: React.FC = () => {
               <article key={chapter} className={styles.noteCard}>
                 <div className={styles.noteHeader}>
                   <span className={styles.chapterLabel}>Chapter {chapter}</span>
-                  <button
-                    onClick={() => handleEditNote(chapter)}
-                    type="button"
+                  <Link
+                    to={`/note-editor/${isbn}/${chapter}`}
                     className={styles.editButton}
                     aria-label={`Edit note for chapter ${chapter}`}
                   >
                     Edit
-                  </button>
+                  </Link>
                 </div>
                 <div className={styles.noteBody}>
                   {/* eslint-disable react/no-array-index-key */}
@@ -153,27 +138,25 @@ const ViewAllNotes: React.FC = () => {
             <p className={styles.emptyDescription}>
               Start capturing your thoughts as you read
             </p>
-            <button
-              onClick={() => handleEditNote(book.current_chapter || 1)}
-              type="button"
+            <Link
+              to={`/note-editor/${isbn}/${book.current_chapter || 1}`}
               className={styles.primaryButton}
             >
               Add First Note
-            </button>
+            </Link>
           </div>
         )}
       </main>
 
       {/* Floating Action Button for existing notes */}
       {hasNotes && (
-        <button
-          onClick={() => handleEditNote(book.current_chapter || 1)}
-          type="button"
+        <Link
+          to={`/note-editor/${isbn}/${book.current_chapter || 1}`}
           className={styles.fab}
           aria-label="Add note for current chapter"
         >
           +
-        </button>
+        </Link>
       )}
     </div>
   );

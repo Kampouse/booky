@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BookEntry, ProgressUpdate, ReadingStatus } from '@/config';
 import { useBookyContract } from '@/lib/bookyContract';
 import styles from '@/styles/book-library.module.css';
@@ -21,8 +21,31 @@ const UpdateProgress: React.FC<UpdateProgressProps> = ({
   setDemoBooks,
 }) => {
   const { updateReadingProgress, markCompleted } = useBookyContract();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Show modal on mount
+  useEffect(() => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  }, []);
+
+  // Handle close when user clicks backdrop or presses ESC
+  const handleClose = () => {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+    onClose();
+  };
+
+  // Handle backdrop click
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      handleClose();
+    }
+  };
 
   const [progressData, setProgressData] = useState<ProgressUpdate>({
     current_chapter: book.current_chapter,
@@ -172,11 +195,20 @@ const UpdateProgress: React.FC<UpdateProgressProps> = ({
     : 0;
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+    <dialog
+      ref={dialogRef}
+      className={styles.dialog}
+      onClose={handleClose}
+      onClick={handleBackdropClick}
+      aria-modal="true"
+      aria-labelledby="update-progress-title"
+    >
+      <div className={styles.dialogContent}>
         <div className={styles.modalHeader}>
           <div>
-            <h2 className={styles.modalTitle}>Update Reading Progress</h2>
+            <h2 id="update-progress-title" className={styles.modalTitle}>
+              Update Reading Progress
+            </h2>
             <p
               style={{
                 marginTop: '0.5rem',
@@ -191,7 +223,7 @@ const UpdateProgress: React.FC<UpdateProgressProps> = ({
           <button
             type="button"
             className={styles.modalCloseButton}
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close modal"
           >
             ×
@@ -462,7 +494,7 @@ const UpdateProgress: React.FC<UpdateProgressProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </dialog>
   );
 };
 

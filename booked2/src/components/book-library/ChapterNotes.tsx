@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BookEntry } from '@/config';
 import { useBookyContract } from '@/lib/bookyContract';
 import styles from '@/styles/book-library.module.css';
@@ -21,11 +21,34 @@ const ChapterNotes: React.FC<ChapterNotesProps> = ({
   setDemoBooks,
 }) => {
   const { addChapterNote, deleteChapterNote } = useBookyContract();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [notes, setNotes] = useState<Record<number, string>>({});
   const [loading, setLoading] = useState(false);
   const [newNoteChapter, setNewNoteChapter] = useState<string>('');
   const [newNoteText, setNewNoteText] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  // Show modal on mount
+  useEffect(() => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  }, []);
+
+  // Handle close when user clicks backdrop or presses ESC
+  const handleClose = () => {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+    onClose();
+  };
+
+  // Handle backdrop click
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === dialogRef.current) {
+      handleClose();
+    }
+  };
 
   useEffect(() => {
     if (book && book.chapter_notes) {
@@ -128,11 +151,20 @@ const ChapterNotes: React.FC<ChapterNotesProps> = ({
   const hasNotes = sortedChapters.length > 0;
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent} style={{ maxWidth: '800px' }}>
+    <dialog
+      ref={dialogRef}
+      className={styles.dialog}
+      onClose={handleClose}
+      onClick={handleBackdropClick}
+      aria-modal="true"
+      aria-labelledby="chapter-notes-title"
+    >
+      <div className={styles.dialogContent} style={{ maxWidth: '800px' }}>
         <div className={styles.modalHeader}>
           <div>
-            <h2 className={styles.modalTitle}>Chapter Notes</h2>
+            <h2 id="chapter-notes-title" className={styles.modalTitle}>
+              Chapter Notes
+            </h2>
             <p
               style={{
                 marginTop: '0.5rem',
@@ -147,7 +179,7 @@ const ChapterNotes: React.FC<ChapterNotesProps> = ({
           <button
             type="button"
             className={styles.modalCloseButton}
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close modal"
           >
             ×
@@ -296,20 +328,20 @@ const ChapterNotes: React.FC<ChapterNotesProps> = ({
               </div>
             )}
           </div>
-        </div>
 
-        <div className={styles.modalFooter}>
-          <button
-            type="button"
-            onClick={onClose}
-            className={styles.buttonSecondary}
-            disabled={loading}
-          >
-            Close
-          </button>
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              onClick={onClose}
+              className={styles.buttonSecondary}
+              disabled={loading}
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };
 

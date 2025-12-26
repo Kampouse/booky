@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router';
 import { useBook, useAddChapterNote } from '@/lib/useBookyQuery';
 import { useNoteContext } from '@/contexts';
 import { useWalletSelector } from '@near-wallet-selector/react-hook';
@@ -21,8 +20,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   demoMode = false,
   returnUrl = '/book-library',
 }) => {
-  const navigate = useNavigate();
-
   // React Query hooks with automatic caching
   const {
     data: book,
@@ -255,14 +252,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     }
   }, [queryError]);
 
-  // Navigation handlers
-  const handleChapterChange = (newChapter: number) => {
-    const url = demoMode
-      ? `/note-editor/${isbn}/${newChapter}?demo=true`
-      : `/note-editor/${isbn}/${newChapter}`;
-    navigate(url);
-  };
-
   return (
     <div
       style={{
@@ -282,7 +271,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         chapterNumber={chapterNumber}
         totalChapters={book?.total_chapters || 0}
         chaptersWithNotes={chaptersWithNotes}
-        onChapterChange={handleChapterChange}
       />
 
       {/* Editor Section */}

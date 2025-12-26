@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { Navigation } from '@/components/navigation';
 import Home from '@/pages/home';
 import BookLibrary from '@/pages/book_library';
+import FriendLibrary from '@/pages/friend_library';
 import NoteEditorPage from '@/pages/note_editor';
 import UpdateProgressPage from '@/pages/update_progress';
 import ViewAllNotes from '@/pages/view_all_notes';
@@ -51,6 +52,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/book-library" element={<BookLibrary />} />
+            <Route path="/friend-library" element={<FriendLibrary />} />
             <Route
               path="/update-progress/:isbn"
               element={<UpdateProgressPage />}

@@ -53,12 +53,16 @@ pub struct Contract {
     /// Maps account_id to their library of books
     /// Using HashMap for simplicity, LookupMap for production if > 1000 books
     libraries: HashMap<AccountId, Vec<BookEntry>>,
+
+    /// Maps account_id to list of accounts they follow
+    followed_accounts: HashMap<AccountId, Vec<AccountId>>,
 }
 
 impl Default for Contract {
     fn default() -> Self {
         Self {
             libraries: HashMap::new(),
+            followed_accounts: HashMap::new(),
         }
     }
 }
@@ -292,6 +296,98 @@ impl Contract {
         book.reading_status = ReadingStatus::Reading;
         book.current_chapter = starting_chapter.unwrap_or(1);
         log!("Started reading {} from chapter {}", book.title, book.current_chapter);
+    }
+
+    /// Follow another account to track their library
+    pub fn follow_account(&mut self, account_id_to_follow: AccountId) {
+        let account_id = env::predecessor_account_id();
+
+        // Prevent self-follow
+        if account_id == account_id_to_follow {
+            panic!("Cannot follow yourself");
+        }
+
+        // Get or create followed list for this account
+        let followed = self.followed_accounts.entry(account_id.clone()).or_default();
+
+        // Check if already following
+        if followed.contains(&account_id_to_follow) {
+            log!("Already following {}", account_id_to_follow);
+            return;
+        }
+
+        followed.push(account_id_to_follow.clone());
+        log!("Now following {}", account_id_to_follow);
+    }
+
+    /// Unfollow an account
+    pub fn unfollow_account(&mut self, account_id_to_unfollow: AccountId) {
+        let account_id = env::predecessor_account_id();
+
+        let followed = self.followed_accounts.get_mut(&account_id)
+            .expect("You don't have any followed accounts");
+
+        // Remove account_id_to_unfollow if present
+        let original_len = followed.len();
+        followed.retain(|id| id != &account_id_to_unfollow);
+
+        if followed.len() < original_len {
+            log!("Unfollowed {}", account_id_to_unfollow);
+        } else {
+            log!("Not following {}", account_id_to_unfollow);
+        }
+    }
+
+    /// Get list of accounts you follow
+    pub fn get_followed_accounts(&self) -> Vec<AccountId> {
+        let account_id = env::predecessor_account_id();
+
+        match self.followed_accounts.get(&account_id) {
+            Some(followed) => followed.clone(),
+            None => Vec::new(),
+        }
+    }
+
+    /// Get another user's library (view-only access)
+    pub fn get_user_library(&self, account_id: AccountId) -> Vec<BookEntry> {
+        match self.libraries.get(&account_id) {
+            Some(library) => library.clone(),
+            None => Vec::new(),
+        }
+    }
+
+    /// Get another user's reading stats
+    pub fn get_user_stats(&self, account_id: AccountId) -> ReadingStats {
+        let library = match self.libraries.get(&account_id) {
+            Some(lib) => lib,
+            None => return ReadingStats {
+                total_books: 0,
+                currently_reading: Vec::new(),
+                completed: 0,
+                to_read: 0,
+                on_hold: 0,
+            },
+        };
+
+        let mut stats = ReadingStats {
+            total_books: library.len(),
+            currently_reading: Vec::new(),
+            completed: 0,
+            to_read: 0,
+            on_hold: 0,
+        };
+
+        for book in library {
+            match book.reading_status {
+                ReadingStatus::Reading => stats.currently_reading.push(book),
+                ReadingStatus::Completed => stats.completed += 1,
+                ReadingStatus::ToRead => stats.to_read += 1,
+                ReadingStatus::OnHold => stats.on_hold += 1,
+                ReadingStatus::Abandoned => {}
+            }
+        }
+
+        stats
     }
 }
 

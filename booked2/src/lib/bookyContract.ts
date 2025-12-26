@@ -163,6 +163,51 @@ export const getCurrentlyReading = async (
   );
 };
 
+export const getFollowedAccounts = async (
+  viewFunction: WalletSelectorHook['viewFunction'],
+  accountId?: string,
+): Promise<string[]> => {
+  return await retryWithBackoff(
+    () =>
+      viewFunction({
+        contractId: CONTRACT,
+        method: 'get_followed_accounts',
+        args: { account_id: accountId },
+      }),
+    'getFollowedAccounts',
+  );
+};
+
+export const getUserLibrary = async (
+  viewFunction: WalletSelectorHook['viewFunction'],
+  accountId: string,
+): Promise<BookEntry[]> => {
+  return await retryWithBackoff(
+    () =>
+      viewFunction({
+        contractId: CONTRACT,
+        method: 'get_user_library',
+        args: { account_id: accountId },
+      }),
+    'getUserLibrary',
+  );
+};
+
+export const getUserStats = async (
+  viewFunction: WalletSelectorHook['viewFunction'],
+  accountId: string,
+): Promise<ReadingStats> => {
+  return await retryWithBackoff(
+    () =>
+      viewFunction({
+        contractId: CONTRACT,
+        method: 'get_user_stats',
+        args: { account_id: accountId },
+      }),
+    'getUserStats',
+  );
+};
+
 // Call Functions (write, require gas and wallet signature)
 export const addBook = async (
   callFunction: WalletSelectorHook['callFunction'],
@@ -290,6 +335,36 @@ export const startReading = async (
   );
 };
 
+export const followAccount = async (
+  callFunction: WalletSelectorHook['callFunction'],
+  accountIdToFollow: string,
+): Promise<void> => {
+  await retryWithBackoff(
+    () =>
+      callFunction({
+        contractId: CONTRACT,
+        method: 'follow_account',
+        args: { account_id_to_follow: accountIdToFollow },
+      }),
+    'followAccount',
+  );
+};
+
+export const unfollowAccount = async (
+  callFunction: WalletSelectorHook['callFunction'],
+  accountIdToUnfollow: string,
+): Promise<void> => {
+  await retryWithBackoff(
+    () =>
+      callFunction({
+        contractId: CONTRACT,
+        method: 'unfollow_account',
+        args: { account_id_to_unfollow: accountIdToUnfollow },
+      }),
+    'unfollowAccount',
+  );
+};
+
 // Custom hook for convenient contract interaction
 export const useBookyContract = () => {
   const { signedAccountId, viewFunction, callFunction } =
@@ -335,5 +410,16 @@ export const useBookyContract = () => {
     markCompleted: (isbn: string) => markCompleted(callFunction, isbn),
     startReading: (isbn: string, startingChapter?: number | null) =>
       startReading(callFunction, isbn, startingChapter),
+
+    // Following feature
+    getFollowedAccounts: (accountId?: string) =>
+      getFollowedAccounts(viewFunction, accountId || signedAccountId || ''),
+    getUserLibrary: (accountId: string) =>
+      getUserLibrary(viewFunction, accountId),
+    getUserStats: (accountId: string) => getUserStats(viewFunction, accountId),
+    followAccount: (accountIdToFollow: string) =>
+      followAccount(callFunction, accountIdToFollow),
+    unfollowAccount: (accountIdToUnfollow: string) =>
+      unfollowAccount(callFunction, accountIdToUnfollow),
   };
 };

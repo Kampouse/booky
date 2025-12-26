@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate, useSearchParams } from 'react-router';
+import { useParams, Link, useSearchParams } from 'react-router';
 import { BookEntry, ProgressUpdate, ReadingStatus } from '@/config';
 import {
   useBook,
@@ -8,8 +8,8 @@ import {
 } from '@/lib/useBookyQuery';
 const UpdateProgressPage: React.FC = () => {
   const { isbn } = useParams<{ isbn: string }>();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const returnChapter = searchParams.get('chapter') || null;
   const {
     data: book,
     isLoading: loading,
@@ -166,12 +166,6 @@ const UpdateProgressPage: React.FC = () => {
       }
 
       setSuccess(true);
-      setTimeout(() => {
-        const noteUrl = demoMode
-          ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
-          : `/note-editor/${isbn}/${progressData.current_chapter}`;
-        navigate(noteUrl);
-      }, 2000);
     } catch (err) {
       setError('Failed to update progress. Please try again.');
       console.error('Error updating reading progress:', err);
@@ -209,12 +203,6 @@ const UpdateProgressPage: React.FC = () => {
       }
 
       setSuccess(true);
-      setTimeout(() => {
-        const libraryUrl = demoMode
-          ? '/book-library?demo=true'
-          : '/book-library';
-        navigate(libraryUrl);
-      }, 2000);
     } catch (err) {
       setError('Failed to mark as completed. Please try again.');
       console.error('Error marking book as completed:', err);
@@ -282,8 +270,8 @@ const UpdateProgressPage: React.FC = () => {
             <Link
               to={
                 demoMode
-                  ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
-                  : `/note-editor/${isbn}/${progressData.current_chapter}`
+                  ? `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}?demo=true`
+                  : `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}`
               }
               style={{
                 display: 'inline-block',
@@ -339,6 +327,8 @@ const UpdateProgressPage: React.FC = () => {
             borderRadius: '10px',
             padding: '2rem',
             textAlign: 'center',
+            maxWidth: '400px',
+            width: '90%',
           }}
         >
           <div
@@ -362,12 +352,77 @@ const UpdateProgressPage: React.FC = () => {
           <p
             style={{
               color: 'rgba(255, 255, 240, 0.85)',
-              marginBottom: '0',
+              marginBottom: '1.5rem',
               fontSize: '0.9rem',
             }}
           >
-            Redirecting back to note...
+            Your progress has been updated successfully.
           </p>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Link
+              to={
+                demoMode
+                  ? `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}?demo=true`
+                  : `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}`
+              }
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'linear-gradient(135deg, #a8d5a2 0%, #88b882 100%)',
+                border: 'none',
+                borderRadius: '6px',
+                color: '#1a2a3a',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow =
+                  '0 4px 12px rgba(168, 213, 162, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              Open Note Editor
+            </Link>
+
+            <Link
+              to={demoMode ? '/book-library?demo=true' : '/book-library'}
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'transparent',
+                border: '1px solid rgba(168, 213, 162, 0.3)',
+                borderRadius: '6px',
+                color: '#a8d5a2',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  'rgba(168, 213, 162, 0.15)';
+                e.currentTarget.style.borderColor = '#a8d5a2';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(168, 213, 162, 0.3)';
+              }}
+            >
+              Back to Library
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -394,8 +449,8 @@ const UpdateProgressPage: React.FC = () => {
           <Link
             to={
               demoMode
-                ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
-                : `/note-editor/${isbn}/${progressData.current_chapter}`
+                ? `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}?demo=true`
+                : `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}`
             }
             style={{
               display: 'flex',
@@ -929,8 +984,8 @@ const UpdateProgressPage: React.FC = () => {
                   <Link
                     to={
                       demoMode
-                        ? `/note-editor/${isbn}/${progressData.current_chapter}?demo=true`
-                        : `/note-editor/${isbn}/${progressData.current_chapter}`
+                        ? `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}?demo=true`
+                        : `/note-editor/${isbn}/${returnChapter || progressData.current_chapter}`
                     }
                     style={{
                       padding: '0.65rem 1.5rem',

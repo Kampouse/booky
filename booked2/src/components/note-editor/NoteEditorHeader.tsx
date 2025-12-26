@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
 import { BookEntry } from '@/config';
 
@@ -11,7 +11,6 @@ interface NoteEditorHeaderProps {
   chapterNumber: number;
   totalChapters: number;
   chaptersWithNotes: number[];
-  onChapterChange: (chapter: number) => void;
 }
 
 export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
@@ -23,9 +22,26 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
   chapterNumber,
   totalChapters,
   chaptersWithNotes,
-  onChapterChange,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const returnLink = demoMode ? '/book-library?demo=true' : returnUrl;
+  const demoSuffix = demoMode ? '?demo=true' : '';
+  const isbn = book?.isbn || '';
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const calculateProgress = (): number => {
     if (!book?.total_chapters || book.total_chapters === 0) return 0;
@@ -165,59 +181,106 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
             }}
             className="chapter-nav"
           >
-            <select
-              value={chapterNumber}
-              onChange={(e) => onChapterChange(Number(e.target.value))}
-              style={{
-                padding: '0.4rem 0.75rem',
-                backgroundColor: 'rgba(168, 213, 162, 0.15)',
-                border: '1px solid rgba(168, 213, 162, 0.3)',
-                borderRadius: '4px',
-                color: '#fffff0',
-                fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
-                fontWeight: '500',
-                fontFamily: '"Lora", Georgia, serif',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                whiteSpace: 'nowrap',
-              }}
-              className="chapter-select"
-              onFocus={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(168, 213, 162, 0.25)';
-                e.currentTarget.style.borderColor = '#a8d5a2';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(168, 213, 162, 0.15)';
-                e.currentTarget.style.borderColor = 'rgba(168, 213, 162, 0.3)';
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(168, 213, 162, 0.25)';
-                e.currentTarget.style.borderColor = '#a8d5a2';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(168, 213, 162, 0.15)';
-                e.currentTarget.style.borderColor = 'rgba(168, 213, 162, 0.3)';
-              }}
-            >
-              {Array.from({ length: totalChapters }, (_, i) => i + 1).map(
-                (num) => (
-                  <option
-                    key={num}
-                    value={num}
-                    style={{
-                      backgroundColor: '#1a2a3a',
-                      color: '#fffff0',
-                    }}
-                  >
-                    {chaptersWithNotes.includes(num) ? '📝 ' : ''}Chapter {num}
-                  </option>
-                ),
+            <div ref={dropdownRef} style={{ position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                style={{
+                  padding: '0.4rem 0.75rem',
+                  backgroundColor: 'rgba(168, 213, 162, 0.15)',
+                  border: '1px solid rgba(168, 213, 162, 0.3)',
+                  borderRadius: '4px',
+                  color: '#fffff0',
+                  fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+                  fontWeight: '500',
+                  fontFamily: '"Lora", Georgia, serif',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  whiteSpace: 'nowrap',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                }}
+                className="chapter-select"
+                onFocus={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(168, 213, 162, 0.25)';
+                  e.currentTarget.style.borderColor = '#a8d5a2';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(168, 213, 162, 0.15)';
+                  e.currentTarget.style.borderColor =
+                    'rgba(168, 213, 162, 0.3)';
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(168, 213, 162, 0.25)';
+                  e.currentTarget.style.borderColor = '#a8d5a2';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(168, 213, 162, 0.15)';
+                  e.currentTarget.style.borderColor =
+                    'rgba(168, 213, 162, 0.3)';
+                }}
+              >
+                {chaptersWithNotes.includes(chapterNumber) ? '📝 ' : ''}
+                Chapter {chapterNumber}
+                <span style={{ fontSize: '0.7rem' }}>{isOpen ? '▲' : '▼'}</span>
+              </button>
+
+              {isOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    backgroundColor: 'rgba(45, 74, 62, 0.98)',
+                    border: '2px solid rgba(168, 213, 162, 0.3)',
+                    borderRadius: '8px',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                    zIndex: 1000,
+                    minWidth: '160px',
+                  }}
+                >
+                  {Array.from({ length: totalChapters }, (_, i) => i + 1).map(
+                    (num) => (
+                      <Link
+                        key={num}
+                        to={`/note-editor/${isbn}/${num}${demoSuffix}`}
+                        onClick={() => setIsOpen(false)}
+                        style={{
+                          display: 'block',
+                          padding: '0.5rem 1rem',
+                          color: num === chapterNumber ? '#a8d5a2' : '#fffff0',
+                          textDecoration: 'none',
+                          fontFamily: '"Lora", Georgia, serif',
+                          fontSize: '0.85rem',
+                          fontWeight: num === chapterNumber ? '600' : '400',
+                          transition: 'background 0.2s ease',
+                          cursor: 'pointer',
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor =
+                            'rgba(168, 213, 162, 0.15)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        {chaptersWithNotes.includes(num) ? '📝 ' : ''}
+                        Chapter {num}
+                      </Link>
+                    ),
+                  )}
+                </div>
               )}
-            </select>
+            </div>
             <span
               style={{
                 color: 'rgba(255, 255, 240, 0.5)',
@@ -275,7 +338,7 @@ export const NoteEditorHeader: React.FC<NoteEditorHeaderProps> = ({
 
           {/* Update Progress Link */}
           <Link
-            to={`/update-progress/${book?.isbn || ''}`}
+            to={`/update-progress/${book?.isbn || ''}?chapter=${chapterNumber}`}
             className="update-progress-link"
             style={{
               padding: '0.35rem 0.6rem',
