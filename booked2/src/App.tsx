@@ -16,15 +16,6 @@ import { setupHotWallet } from '@near-wallet-selector/hot-wallet';
 import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupSender } from '@near-wallet-selector/sender';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
-import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
-import { setupMathWallet } from '@near-wallet-selector/math-wallet';
-import { setupBitgetWallet } from '@near-wallet-selector/bitget-wallet';
-import { setupRamperWallet } from '@near-wallet-selector/ramper-wallet';
-import { setupUnityWallet } from '@near-wallet-selector/unity-wallet';
-import { setupOKXWallet } from '@near-wallet-selector/okx-wallet';
-import { setupCoin98Wallet } from '@near-wallet-selector/coin98-wallet';
-import { setupIntearWallet } from '@near-wallet-selector/intear-wallet';
-
 import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
 import { NoteProvider } from '@/contexts';
 
@@ -42,6 +33,9 @@ const walletSelectorConfig = {
   debug: true,
   modules: [
     setupMeteorWallet(),
+    setupLedger(),
+    setupSender(),
+    setupNearMobileWallet(),
     setupMeteorWalletApp({ contractId: HelloNearContract }),
     setupHotWallet(),
   ] as WalletModuleFactory[],

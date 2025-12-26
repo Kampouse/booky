@@ -1,10 +1,17 @@
 import { Link } from 'react-router';
+import { useWalletSelector } from '@near-wallet-selector/react-hook';
+
+interface WalletSelectorHook {
+  signIn: () => void;
+}
 
 interface HeroSectionProps {
   accountId: string | null;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ accountId }) => {
+  const { signIn } = useWalletSelector() as WalletSelectorHook;
+
   return (
     <div
       className="position-relative d-flex align-items-center"
@@ -90,6 +97,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ accountId }) => {
                   display: 'inline-block',
                   padding: '1.25rem 2rem',
                   backdropFilter: 'blur(10px)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  userSelect: 'none',
+                }}
+                onClick={signIn}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(255, 255, 240, 0.12)';
+                  e.currentTarget.style.borderColor =
+                    'rgba(168, 213, 162, 0.4)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow =
+                    '0 4px 15px rgba(168, 213, 162, 0.2)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(255, 255, 240, 0.08)';
+                  e.currentTarget.style.borderColor =
+                    'rgba(168, 213, 162, 0.25)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
                 <strong style={{ color: '#a8d5a2' }}>
