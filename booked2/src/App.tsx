@@ -18,7 +18,7 @@ import { setupLedger } from '@near-wallet-selector/ledger';
 import { setupSender } from '@near-wallet-selector/sender';
 import { setupNearMobileWallet } from '@near-wallet-selector/near-mobile-wallet';
 import { WalletSelectorProvider } from '@near-wallet-selector/react-hook';
-import { NoteProvider } from '@/contexts';
+import { NoteProvider, ProgressProvider } from '@/contexts';
 
 // Types
 import type { WalletModuleFactory } from '@near-wallet-selector/core';
@@ -46,22 +46,27 @@ function App() {
   return (
     <WalletSelectorProvider config={walletSelectorConfig}>
       <NoteProvider>
-        <BrowserRouter>
-          <Navigation />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/book-library" element={<BookLibrary />} />
-            <Route
-              path="/update-progress/:isbn"
-              element={<UpdateProgressPage />}
-            />
-            <Route
-              path="/note-editor/:isbn/:chapter"
-              element={<NoteEditorPage />}
-            />
-            <Route path="/view-all-notes/:isbn" element={<ViewAllNotes />} />
-          </Routes>
-        </BrowserRouter>
+        <ProgressProvider>
+          <BrowserRouter>
+            <Navigation />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/book-library" element={<BookLibrary />} />
+              <Route
+                path="/update-progress/:isbn"
+                element={<UpdateProgressPage />}
+              />
+              <Route
+                path="/note-editor/:isbn/:chapter"
+                element={<NoteEditorPage />}
+              />
+              <Route
+                path="/view-all-notes/:isbn"
+                element={<ViewAllNotes />}
+              />
+            </Routes>
+          </BrowserRouter>
+        </ProgressProvider>
       </NoteProvider>
     </WalletSelectorProvider>
   );
