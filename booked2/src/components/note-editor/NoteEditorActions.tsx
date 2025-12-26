@@ -144,10 +144,10 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
           onClick={onSave}
           onFocus={() => {}}
           onBlur={() => {}}
-          disabled={saving || !accountId}
+          disabled={saving || !accountId || !hasUnsavedChanges}
           className="save-btn"
           style={
-            saving || !accountId
+            saving || !accountId || !hasUnsavedChanges
               ? {
                   padding: '0.875rem 2.5rem',
                   background: 'rgba(168, 213, 162, 0.3)',
@@ -175,10 +175,14 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
                 }
           }
           title={
-            !accountId ? 'Connect your wallet to save' : 'Save to blockchain'
+            !accountId
+              ? 'Connect your wallet to save'
+              : !hasUnsavedChanges
+                ? 'No changes to save'
+                : 'Save to blockchain'
           }
           onMouseOver={(e) => {
-            if (!saving && accountId) {
+            if (!saving && accountId && hasUnsavedChanges) {
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow =
                 '0 4px 12px rgba(168, 213, 162, 0.3)';
@@ -189,7 +193,13 @@ export const NoteEditorActions: React.FC<NoteEditorActionsProps> = ({
             e.currentTarget.style.boxShadow = 'none';
           }}
         >
-          {saving ? 'Saving...' : !accountId ? 'Connect Wallet' : 'Save Note'}
+          {saving
+            ? 'Saving...'
+            : !accountId
+              ? 'Connect Wallet'
+              : !hasUnsavedChanges
+                ? 'No changes'
+                : 'Save Note'}
         </button>
       </div>
 
