@@ -1,5 +1,5 @@
 const contractPerNetwork = {
-  mainnet: 'jemartel.near',
+  mainnet: 'bookyes.near',
   testnet: 'booky.testnet',
 };
 
