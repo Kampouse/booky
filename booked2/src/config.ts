@@ -1,20 +1,52 @@
 const contractPerNetwork = {
   mainnet: 'jemartel.near',
-  testnet: 'quixotic-hour.testnet',
+  testnet: 'booky.testnet',
 };
 
-export const NetworkId = 'mainnet';
-
-// Mainnet configuration
-export const NetworkConfig = {
-  nodeUrl: 'https://rpc.mainnet.near.org',
-  walletUrl: 'https://app.mynearwallet.com/',
-  helperUrl: 'https://helper.mainnet.near.org',
-  explorerUrl: 'https://nearblocks.io',
+// Get network from localStorage or default to mainnet
+export const getNetworkId = (): 'mainnet' | 'testnet' => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('booky_network');
+    return stored === 'mainnet' || stored === 'testnet' ? stored : 'mainnet';
+  }
+  return 'mainnet';
 };
+
+export const setNetworkId = (network: 'mainnet' | 'testnet') => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('booky_network', network);
+  }
+};
+
+export const NetworkId = getNetworkId();
+
+// Network configurations
+export const NetworkConfigs = {
+  mainnet: {
+    nodeUrl: 'https://rpc.mainnet.near.org',
+    walletUrl: 'https://app.mynearwallet.com/',
+    helperUrl: 'https://helper.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
+  },
+  testnet: {
+    nodeUrl: 'https://rpc.testnet.near.org',
+    walletUrl: 'https://app.testnet.near.org/',
+    helperUrl: 'https://helper.testnet.near.org',
+    explorerUrl: 'https://testnet.nearblocks.io',
+  },
+};
+
+export const NetworkConfig = NetworkConfigs[NetworkId];
 
 export const HelloNearContract = contractPerNetwork[NetworkId];
 export const BookyContract = contractPerNetwork[NetworkId];
+
+// Helper function to switch networks
+export const switchNetwork = (network: 'mainnet' | 'testnet') => {
+  setNetworkId(network);
+  // Force page reload to apply new network
+  window.location.reload();
+};
 
 // Contract Types
 export type ReadingStatus =

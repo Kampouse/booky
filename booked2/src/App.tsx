@@ -7,7 +7,12 @@ import FriendLibrary from '@/pages/friend_library';
 import NoteEditorPage from '@/pages/note_editor';
 import UpdateProgressPage from '@/pages/update_progress';
 import ViewAllNotes from '@/pages/view_all_notes';
-import { HelloNearContract, NetworkId, BookyContract } from '@/config';
+import {
+  HelloNearContract,
+  NetworkId,
+  BookyContract,
+  NetworkConfig,
+} from '@/config';
 
 import '@near-wallet-selector/modal-ui/styles.css';
 
@@ -27,10 +32,10 @@ import type { WalletModuleFactory } from '@near-wallet-selector/core';
 const walletSelectorConfig = {
   network: {
     networkId: NetworkId,
-    nodeUrl: 'https://rpc.mainnet.near.org',
-    walletUrl: 'https://app.mynearwallet.com/',
-    helperUrl: 'https://helper.mainnet.near.org',
-    explorerUrl: 'https://nearblocks.io',
+    nodeUrl: NetworkConfig.nodeUrl,
+    walletUrl: NetworkConfig.walletUrl,
+    helperUrl: NetworkConfig.helperUrl,
+    explorerUrl: NetworkConfig.explorerUrl,
   },
   debug: true,
   modules: [

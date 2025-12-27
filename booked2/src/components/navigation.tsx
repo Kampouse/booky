@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useWalletSelector } from '@near-wallet-selector/react-hook';
+import { NetworkId, switchNetwork } from '@/config';
 
 interface WalletSelectorHook {
   signedAccountId: string | null;
@@ -16,6 +17,7 @@ export const Navigation = () => {
   const [label, setLabel] = useState<string>('Loading...');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showNetworkMenu, setShowNetworkMenu] = useState(false);
 
   useEffect(() => {
     if (signedAccountId) {
@@ -152,6 +154,107 @@ export const Navigation = () => {
 
           {/* Wallet Section */}
           <div className="d-flex align-items-center gap-3">
+            {/* Network Switcher */}
+            <div style={{ position: 'relative' }}>
+              <button
+                className="btn"
+                onClick={() => setShowNetworkMenu(!showNetworkMenu)}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(168, 213, 162, 0.4)',
+                  color: '#fffff0',
+                  fontWeight: 600,
+                  padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  letterSpacing: '0.02em',
+                  fontSize: '0.8rem',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span style={{ fontSize: '1rem' }}>
+                  {NetworkId === 'mainnet' ? '🌐' : '🧪'}
+                </span>
+                <span>{NetworkId === 'mainnet' ? 'Mainnet' : 'Testnet'}</span>
+                <span style={{ fontSize: '0.75rem' }}>▼</span>
+              </button>
+
+              {showNetworkMenu && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 0.5rem)',
+                    right: 0,
+                    background: '#fffff0',
+                    borderRadius: '8px',
+                    boxShadow: '0 8px 24px rgba(45, 74, 62, 0.3)',
+                    border: '1px solid rgba(168, 213, 162, 0.3)',
+                    padding: '0.5rem',
+                    zIndex: 1000,
+                    minWidth: '160px',
+                  }}
+                >
+                  <button
+                    className="btn w-100 text-start mb-2"
+                    onClick={() => {
+                      switchNetwork('mainnet');
+                      setShowNetworkMenu(false);
+                    }}
+                    disabled={NetworkId === 'mainnet'}
+                    style={{
+                      background: 'transparent',
+                      border:
+                        NetworkId === 'mainnet' ? '2px solid #a8d5a2' : 'none',
+                      color: NetworkId === 'mainnet' ? '#a8d5a2' : '#1a2a3a',
+                      fontWeight: NetworkId === 'mainnet' ? 600 : 400,
+                      padding: '0.5rem 0.75rem',
+                      borderRadius: '6px',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: 'all 0.2s ease',
+                      cursor: NetworkId === 'mainnet' ? 'default' : 'pointer',
+                    }}
+                  >
+                    <span>🌐</span>
+                    <span>Mainnet</span>
+                    {NetworkId === 'mainnet' && <span>✓</span>}
+                  </button>
+                  <button
+                    className="btn w-100 text-start"
+                    onClick={() => {
+                      switchNetwork('testnet');
+                      setShowNetworkMenu(false);
+                    }}
+                    disabled={NetworkId === 'testnet'}
+                    style={{
+                      background: 'transparent',
+                      border:
+                        NetworkId === 'testnet' ? '2px solid #a8d5a2' : 'none',
+                      color: NetworkId === 'testnet' ? '#a8d5a2' : '#1a2a3a',
+                      fontWeight: NetworkId === 'testnet' ? 600 : 400,
+                      padding: '0.5rem 0.75rem',
+                      borderRadius: '6px',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: 'all 0.2s ease',
+                      cursor: NetworkId === 'testnet' ? 'default' : 'pointer',
+                    }}
+                  >
+                    <span>🧪</span>
+                    <span>Testnet</span>
+                    {NetworkId === 'testnet' && <span>✓</span>}
+                  </button>
+                </div>
+              )}
+            </div>
+
             {signedAccountId && (
               <div
                 className="d-none d-md-block text-end"

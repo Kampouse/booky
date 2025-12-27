@@ -7,10 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "wrangler deploy",
-    "dev:worker": "wrangler dev",
-    "cf:login": "wrangler login"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@near-wallet-selector/bitget-wallet": "9.5.4",
