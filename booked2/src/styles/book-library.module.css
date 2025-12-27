@@ -985,13 +985,11 @@
     }
 
     .dialogContent {
-        max-height: 100vh;
-        height: 100vh;
-        margin: 0;
-        border-radius: 0;
+        max-height: 85vh;
+        width: calc(100vw - 2rem);
         display: flex;
         flex-direction: column;
-        width: 100%;
+        border-radius: 8px;
     }
 
     .modalHeader,

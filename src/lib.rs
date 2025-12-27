@@ -338,10 +338,8 @@ impl Contract {
         }
     }
 
-    /// Get list of accounts you follow
-    pub fn get_followed_accounts(&self) -> Vec<AccountId> {
-        let account_id = env::predecessor_account_id();
-
+    /// Get list of accounts that a user follows
+    pub fn get_followed_accounts(&self, account_id: AccountId) -> Vec<AccountId> {
         match self.followed_accounts.get(&account_id) {
             Some(followed) => followed.clone(),
             None => Vec::new(),
@@ -362,7 +360,7 @@ impl Contract {
             Some(lib) => lib,
             None => return ReadingStats {
                 total_books: 0,
-                currently_reading: Vec::new(),
+                currently_reading: 0,
                 completed: 0,
                 to_read: 0,
                 on_hold: 0,
@@ -370,8 +368,8 @@ impl Contract {
         };
 
         let mut stats = ReadingStats {
-            total_books: library.len(),
-            currently_reading: Vec::new(),
+            total_books: library.len() as u32,
+            currently_reading: 0,
             completed: 0,
             to_read: 0,
             on_hold: 0,
@@ -379,7 +377,7 @@ impl Contract {
 
         for book in library {
             match book.reading_status {
-                ReadingStatus::Reading => stats.currently_reading.push(book),
+                ReadingStatus::Reading => stats.currently_reading += 1,
                 ReadingStatus::Completed => stats.completed += 1,
                 ReadingStatus::ToRead => stats.to_read += 1,
                 ReadingStatus::OnHold => stats.on_hold += 1,
