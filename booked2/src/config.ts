@@ -66,7 +66,7 @@ export interface BookEntry {
   media_hash: string | null;
   reading_status: ReadingStatus;
   current_chapter: number;
-  total_chapters: number | null;
+  total_chapters: number;
   chapters_read: number[];
   last_read_position: string;
   last_read_date: string | null;

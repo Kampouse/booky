@@ -23,7 +23,7 @@ export interface Book {
   media_hash: string | null;
   reading_status: 'ToRead' | 'Reading' | 'Completed' | 'OnHold' | 'Abandoned';
   current_chapter: number;
-  total_chapters: number | null;
+  total_chapters: number;
   chapters_read: number[];
   last_read_position: string;
   last_read_date: string | null;
@@ -36,7 +36,13 @@ export interface ProgressUpdate {
   chapters_completed: number[];
   last_read_position: string | null;
   last_read_date: string | null;
-  reading_status: 'ToRead' | 'Reading' | 'Completed' | 'OnHold' | 'Abandoned' | null;
+  reading_status:
+    | 'ToRead'
+    | 'Reading'
+    | 'Completed'
+    | 'OnHold'
+    | 'Abandoned'
+    | null;
 }
 
 export interface ChapterNote {
@@ -83,7 +89,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -103,7 +109,7 @@ class WorkerApiClient {
    */
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
@@ -122,7 +128,7 @@ class WorkerApiClient {
         if (!response.ok) {
           throw new ApiError(
             `HTTP error! status: ${response.status}`,
-            response.status
+            response.status,
           );
         }
         return undefined as T;
@@ -134,7 +140,7 @@ class WorkerApiClient {
         throw new ApiError(
           data.error || `HTTP error! status: ${response.status}`,
           response.status,
-          data
+          data,
         );
       }
 
@@ -148,14 +154,14 @@ class WorkerApiClient {
         throw new ApiError(
           'Network error - unable to connect to the server',
           0,
-          error
+          error,
         );
       }
 
       throw new ApiError(
         error instanceof Error ? error.message : 'Unknown error occurred',
         0,
-        error
+        error,
       );
     }
   }
@@ -181,14 +187,20 @@ class WorkerApiClient {
   /**
    * Get all books for an account
    */
-  async getBooks(accountId: string): Promise<{ books: Book[]; account_id: string; total: number }> {
-    return this.request(`/api/books?account_id=${encodeURIComponent(accountId)}`);
+  async getBooks(
+    accountId: string,
+  ): Promise<{ books: Book[]; account_id: string; total: number }> {
+    return this.request(
+      `/api/books?account_id=${encodeURIComponent(accountId)}`,
+    );
   }
 
   /**
    * Add a new book
    */
-  async addBook(book: Omit<Book, 'added_at' | 'chapters_read' | 'chapter_notes'>): Promise<ApiResponse<{ success: boolean; message: string; book: Book }>> {
+  async addBook(
+    book: Omit<Book, 'added_at' | 'chapters_read' | 'chapter_notes'>,
+  ): Promise<ApiResponse<{ success: boolean; message: string; book: Book }>> {
     return this.request('/api/books', {
       method: 'POST',
       body: JSON.stringify(book),
@@ -202,8 +214,15 @@ class WorkerApiClient {
    */
   async updateProgress(
     isbn: string,
-    progress: ProgressUpdate
-  ): Promise<ApiResponse<{ success: boolean; message: string; isbn: string; progress: ProgressUpdate }>> {
+    progress: ProgressUpdate,
+  ): Promise<
+    ApiResponse<{
+      success: boolean;
+      message: string;
+      isbn: string;
+      progress: ProgressUpdate;
+    }>
+  > {
     return this.request('/api/books/progress', {
       method: 'PUT',
       body: JSON.stringify({ isbn, progress }),
@@ -218,8 +237,17 @@ class WorkerApiClient {
   async addNote(
     isbn: string,
     chapter: number,
-    note: string
-  ): Promise<ApiResponse<{ success: boolean; message: string; isbn: string; chapter: number; note: string; added_at: string }>> {
+    note: string,
+  ): Promise<
+    ApiResponse<{
+      success: boolean;
+      message: string;
+      isbn: string;
+      chapter: number;
+      note: string;
+      added_at: string;
+    }>
+  > {
     return this.request('/api/books/notes', {
       method: 'POST',
       body: JSON.stringify({ isbn, chapter, note }),
@@ -232,7 +260,9 @@ class WorkerApiClient {
    * Get reading statistics for an account
    */
   async getStats(accountId: string): Promise<ReadingStats> {
-    return this.request(`/api/stats?account_id=${encodeURIComponent(accountId)}`);
+    return this.request(
+      `/api/stats?account_id=${encodeURIComponent(accountId)}`,
+    );
   }
 
   // NEAR Proxy Endpoints
@@ -250,7 +280,9 @@ class WorkerApiClient {
   /**
    * Proxy a NEAR call (transaction)
    */
-  async nearCall(params: NearCallParams): Promise<ApiResponse<{ success: boolean; message: string }>> {
+  async nearCall(
+    params: NearCallParams,
+  ): Promise<ApiResponse<{ success: boolean; message: string }>> {
     return this.request('/api/near/call', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -295,8 +327,9 @@ export const useApi = () => {
     // Convenience methods
     checkHealth: () => apiClient.checkHealth(),
     getBooks: (accountId: string) => apiClient.getBooks(accountId),
-    addBook: (book: Omit<Book, 'added_at' | 'chapters_read' | 'chapter_notes'>) =>
-      apiClient.addBook(book),
+    addBook: (
+      book: Omit<Book, 'added_at' | 'chapters_read' | 'chapter_notes'>,
+    ) => apiClient.addBook(book),
     updateProgress: (isbn: string, progress: ProgressUpdate) =>
       apiClient.updateProgress(isbn, progress),
     addNote: (isbn: string, chapter: number, note: string) =>

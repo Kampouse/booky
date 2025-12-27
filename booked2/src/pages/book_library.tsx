@@ -153,7 +153,7 @@ const BookLibrary = () => {
   });
 
   return (
-    <div className={styles.libraryContainer}>
+    <div className={styles.libraryContainer} style={{ minHeight: '85.9vh' }}>
       {/* Header Section */}
       <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
         <h1

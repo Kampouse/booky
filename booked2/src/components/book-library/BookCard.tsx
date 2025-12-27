@@ -27,7 +27,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, demoMode = false }) => {
 
   const calculateProgress = (): number => {
     if (!book.total_chapters || book.total_chapters === 0) return 0;
-    const progress = (book.current_chapter / book.total_chapters) * 100;
+    const progress = (book.current_chapter / book.total_chapters!) * 100;
     return Math.min(Math.max(progress, 0), 100);
   };
 
@@ -81,14 +81,13 @@ const BookCard: React.FC<BookCardProps> = ({ book, demoMode = false }) => {
         >
           {hasNotes ? 'Open Book Notes' : 'Start Taking Notes'}
         </Link>
-        {hasNotes && (
-          <Link
-            to={`/view-all-notes/${book.isbn}${demoMode ? '?demo=true' : ''}`}
-            className={`${styles.bookCardActionButton} ${styles.bookCardActionTertiary}`}
-          >
-            View All Notes
-          </Link>
-        )}
+        <Link
+          to={`/view-all-notes/${book.isbn}${demoMode ? '?demo=true' : ''}`}
+          className={`${styles.bookCardActionButton} ${styles.bookCardActionTertiary}`}
+          aria-label="View all notes for this book"
+        >
+          View all notes
+        </Link>
         <Link
           to={`/update-progress/${book.isbn}${demoMode ? '?demo=true' : ''}`}
           className={`${styles.bookCardActionButton} ${styles.bookCardActionSecondary}`}

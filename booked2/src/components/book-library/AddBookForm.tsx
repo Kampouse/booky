@@ -33,7 +33,7 @@ const AddBookForm: React.FC<AddBookFormProps> = ({
     media_hash: null,
     reading_status: 'ToRead',
     current_chapter: 0,
-    total_chapters: null,
+    total_chapters: 1,
     chapters_read: [],
     last_read_position: '0',
     last_read_date: null,
@@ -84,6 +84,11 @@ const AddBookForm: React.FC<AddBookFormProps> = ({
       return;
     }
 
+    if (!formData.total_chapters || formData.total_chapters < 1) {
+      setError('Total Chapters is required and must be at least 1');
+      return;
+    }
+
     try {
       setLoading(true);
       const bookData: BookEntry = {
@@ -97,9 +102,7 @@ const AddBookForm: React.FC<AddBookFormProps> = ({
         media_hash: formData.media_hash || null,
         reading_status: formData.reading_status || 'ToRead',
         current_chapter: Number(formData.current_chapter) || 0,
-        total_chapters: formData.total_chapters
-          ? Number(formData.total_chapters)
-          : null,
+        total_chapters: Number(formData.total_chapters)!,
         chapters_read: [],
         last_read_position: formData.last_read_position || '0',
         last_read_date: formData.last_read_date || null,
@@ -230,17 +233,18 @@ const AddBookForm: React.FC<AddBookFormProps> = ({
               </div>
               <div className={styles.formGroupHalf}>
                 <label htmlFor="total_chapters" className={styles.formLabel}>
-                  Total Chapters
+                  Total Chapters *
                 </label>
                 <input
                   type="number"
                   id="total_chapters"
                   name="total_chapters"
-                  value={formData.total_chapters || ''}
+                  value={formData.total_chapters}
                   onChange={handleInputChange}
                   className={styles.formControl}
-                  placeholder="Optional"
+                  placeholder="e.g., 12"
                   min="1"
+                  required
                 />
               </div>
             </div>

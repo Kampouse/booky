@@ -4,6 +4,7 @@ import {
   ReadingStats,
   BookyContract,
 } from '@/config';
+import { FollowedAccountDetails } from '@/utils/types';
 import { useWalletSelector } from '@near-wallet-selector/react-hook';
 
 interface WalletSelectorHook {
@@ -205,6 +206,21 @@ export const getUserStats = async (
         args: { account_id: accountId },
       }),
     'getUserStats',
+  );
+};
+
+export const getFollowedAccountsWithDetails = async (
+  viewFunction: WalletSelectorHook['viewFunction'],
+  accountId?: string,
+): Promise<FollowedAccountDetails[]> => {
+  return await retryWithBackoff(
+    () =>
+      viewFunction({
+        contractId: CONTRACT,
+        method: 'get_followed_accounts_with_details',
+        args: { account_id: accountId },
+      }),
+    'getFollowedAccountsWithDetails',
   );
 };
 
@@ -417,6 +433,11 @@ export const useBookyContract = () => {
     getUserLibrary: (accountId: string) =>
       getUserLibrary(viewFunction, accountId),
     getUserStats: (accountId: string) => getUserStats(viewFunction, accountId),
+    getFollowedAccountsWithDetails: (accountId?: string) =>
+      getFollowedAccountsWithDetails(
+        viewFunction,
+        accountId || signedAccountId || '',
+      ),
     followAccount: (accountIdToFollow: string) =>
       followAccount(callFunction, accountIdToFollow),
     unfollowAccount: (accountIdToUnfollow: string) =>

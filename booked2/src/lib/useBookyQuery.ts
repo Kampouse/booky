@@ -20,6 +20,8 @@ export const queryKeys = {
     ['followedAccounts', accountId] as const,
   userLibrary: (accountId: string) => ['userLibrary', accountId] as const,
   userStats: (accountId: string) => ['userStats', accountId] as const,
+  followedAccountsWithDetails: (accountId: string) =>
+    ['followedAccountsWithDetails', accountId] as const,
 } as const;
 
 // ========================================
@@ -405,7 +407,7 @@ export const useStartReading = () => {
       isbn: string;
       startingChapter?: number | null;
     }) => contract.startReading(isbn, startingChapter),
-    onSuccess: (_data: unknown, isbn: string) => {
+    onSuccess: () => {
       // Invalidate reading-related queries
       // @ts-ignore
       if (accountId) {
@@ -420,10 +422,6 @@ export const useStartReading = () => {
         // @ts-ignore
         queryClient.invalidateQueries({
           queryKey: queryKeys.readingStats(accountId),
-        });
-        // @ts-ignore
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.book(accountId, isbn),
         });
       }
     },
@@ -473,7 +471,29 @@ export const useUserStats = (accountId: string) => {
     // @ts-ignore
     queryFn: () => contract.getUserStats(accountId),
     enabled: !!accountId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes - stats don't change often
+  });
+};
+
+/**
+ * Get followed accounts with their libraries and stats in a single batched call
+ * This is much more efficient than calling useFollowedAccounts + useUserLibrary + useUserStats separately
+ * Reduces RPC calls from 1 + 2*N to just 1 call where N is the number of followed accounts
+ */
+export const useFollowedAccountsWithDetails = (accountId?: string | null) => {
+  const contract = useBookyContract();
+
+  // @ts-ignore
+  return useQuery({
+    // @ts-ignore
+    queryKey: queryKeys.followedAccountsWithDetails(
+      accountId || contract.accountId || 'unknown',
+    ),
+    // @ts-ignore
+    queryFn: () => contract.getFollowedAccountsWithDetails(accountId),
+    enabled: !!(accountId || contract.accountId),
+    staleTime: 2 * 60 * 1000, // 2 minutes - followed list changes moderately often
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 

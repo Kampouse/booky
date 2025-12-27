@@ -387,6 +387,50 @@ impl Contract {
 
         stats
     }
+
+    /// Get followed accounts with their libraries and stats in a single call
+    /// This is more efficient than calling get_followed_accounts + get_user_library + get_user_stats separately
+    pub fn get_followed_accounts_with_details(&self, account_id: AccountId) -> Vec<FollowedAccountDetails> {
+        let followed_ids = match self.followed_accounts.get(&account_id) {
+            Some(followed) => followed.clone(),
+            None => return Vec::new(),
+        };
+
+        followed_ids
+            .into_iter()
+            .map(|followed_id| {
+                let library = self
+                    .libraries
+                    .get(&followed_id)
+                    .cloned()
+                    .unwrap_or_default();
+
+                let mut stats = ReadingStats {
+                    total_books: library.len() as u32,
+                    currently_reading: 0,
+                    completed: 0,
+                    to_read: 0,
+                    on_hold: 0,
+                };
+
+                for book in &library {
+                    match book.reading_status {
+                        ReadingStatus::Reading => stats.currently_reading += 1,
+                        ReadingStatus::Completed => stats.completed += 1,
+                        ReadingStatus::ToRead => stats.to_read += 1,
+                        ReadingStatus::OnHold => stats.on_hold += 1,
+                        ReadingStatus::Abandoned => {}
+                    }
+                }
+
+                FollowedAccountDetails {
+                    account_id: followed_id,
+                    library,
+                    stats,
+                }
+            })
+            .collect()
+    }
 }
 
 /// Reading statistics for an account's library
@@ -397,6 +441,14 @@ pub struct ReadingStats {
     pub completed: u32,
     pub to_read: u32,
     pub on_hold: u32,
+}
+
+/// Detailed information about a followed account including their library and stats
+#[near(serializers = [json, borsh])]
+pub struct FollowedAccountDetails {
+    pub account_id: AccountId,
+    pub library: Vec<BookEntry>,
+    pub stats: ReadingStats,
 }
 
 /*
